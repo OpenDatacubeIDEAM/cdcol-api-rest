@@ -1,3 +1,4 @@
 api_rest/migrations
 *.pyc
 *.sqlite*
+*.swp

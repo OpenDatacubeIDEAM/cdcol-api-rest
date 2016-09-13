@@ -8,13 +8,10 @@ from django.contrib.auth.models import User
 class StorageUnit(models.Model):
 	name = models.CharField(max_length=200)
 	description = models.TextField()
-	# Pending set upload_to attribute for FileFields
-	description_file = models.FileField()
-	ingest_file = models.FileField()
-	# Specific to Postgresql
+	description_file = models.CharField(max_length=200)
+	ingest_file = models.CharField(max_length=200)
 	metadata = JSONField()
-	# Max size for root directory path?
-	root_dir = models.CharField(max_length=200)
+	root_dir = models.FilePathField()
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)

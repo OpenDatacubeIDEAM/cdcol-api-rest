@@ -79,13 +79,23 @@ WSGI_APPLICATION = 'cdcol.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ['DBHOST'],
-        'PORT': os.environ['DBPORT'],
-        'NAME': os.environ['DBNAME'],
-        'USER': os.environ['DBUSER'],
-        'PASSWORD': os.environ['DBPASSWORD'],
+        'HOST': os.environ['WEB_DBHOST'],
+        'PORT': os.environ['WEB_DBPORT'],
+        'NAME': os.environ['WEB_DBNAME'],
+        'USER': os.environ['WEB_DBUSER'],
+        'PASSWORD': os.environ['WEB_DBPASSWORD'],
+    },
+    'datacube': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ['DATACUBE_DBHOST'],
+        'PORT': os.environ['DATACUBE_DBPORT'],
+        'NAME': os.environ['DATACUBE_DBNAME'],
+        'USER': os.environ['DATACUBE_DBUSER'],
+        'PASSWORD': os.environ['DATACUBE_DBPASSWORD'],
     }
 }
+
+DATABASE_ROUTERS = ['api_rest.datacube.dc_routers.DatacubeRouter']
 
 
 # Password validation

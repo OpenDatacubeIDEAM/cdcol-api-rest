@@ -1,7 +1,8 @@
 from rest_framework import serializers
+from rest_framework.renderers import JSONRenderer
 from api_rest.models import StorageUnit
 from StringIO import StringIO
-import base64
+import base64, yaml
 
 class StorageUnitSerializer(serializers.Serializer):
 
@@ -18,5 +19,9 @@ class StorageUnitSerializer(serializers.Serializer):
 		with open('/home/developer/Documentos/ingest_file.yaml', 'w') as desc_file:
 			desc_io = StringIO(validated_data['ingest_file'].replace('\\n','\n'))
 			base64.decode(desc_io, desc_file)
+		validated_data['metadata'] = ''
+		with open('/home/developer/Documentos/description_file.yaml', 'r') as metadata_file:
+			metadata = yaml.load(metadata_file)
+			validated_data['metadata'] = JSONRenderer().render(metadata)
 		return object()
 		

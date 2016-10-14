@@ -16,7 +16,7 @@ class DatacubeRouter(object):
 			return 'datacube'
 		return None
 
-	def db_for_write(self, model, **hints)
+	def db_for_write(self, model, **hints):
 
 		if model._meta.label.split('.',1)[-1] in self.dc_models:
 			# Temporarily deactivated

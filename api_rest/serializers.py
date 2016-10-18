@@ -6,6 +6,7 @@ import base64, yaml, os
 
 class StorageUnitSerializer(serializers.Serializer):
 
+	id = serializers.IntegerField(required=False)
 	name = serializers.CharField(max_length=200)
 	description = serializers.CharField()
 	description_file = serializers.CharField()

@@ -10,7 +10,11 @@ class StorageUnitSerializer(serializers.Serializer):
 	description = serializers.CharField()
 	description_file = serializers.CharField()
 	ingest_file = serializers.CharField()
+	metadata = serializers.JSONField(required=False)
+	root_dir = serializers.CharField(required=False)
 	created_by = serializers.CharField(max_length=200)
+	created_at = serializers.DateTimeField(required=False)
+	updated_at = serializers.DateTimeField(required=False)
 
 	def create(self, validated_data):
 

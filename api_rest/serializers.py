@@ -18,6 +18,9 @@ class StorageUnitSerializer(serializers.Serializer):
 
 	def create(self, validated_data):
 
+		if StorageUnit.objects.filter(name=validated_data['name']).exists():
+			raise serializers.ValidationError('The Storage Unit Already Exists')
+
 		stg_unit_folder = os.environ['DC_STORAGE'] + '/' + validated_data['name'].upper()
 
 		if not os.path.exists(stg_unit_folder):

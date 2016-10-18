@@ -7,7 +7,7 @@ from rest_framework.renderers import JSONRenderer
 
 # Create your models here.
 class StorageUnit(models.Model):
-	name = models.CharField(max_length=200)
+	name = models.CharField(max_length=200, unique=True)
 	description = models.TextField()
 	description_file = models.CharField(max_length=200)
 	ingest_file = models.CharField(max_length=200)

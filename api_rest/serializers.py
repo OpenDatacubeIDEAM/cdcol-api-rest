@@ -29,14 +29,14 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		validated_data['root_dir'] = stg_unit_folder
 
-		desc_file_path = stg_unit_folder + '/description_file.yml'
-		with open(desc_file_path , 'w') as desc_file:
+		desc_file_path = 'description_file.yml'
+		with open(stg_unit_folder + '/' + desc_file_path , 'w') as desc_file:
 			desc_io = StringIO(validated_data['description_file'].replace('\\n','\n'))
 			base64.decode(desc_io, desc_file)
 			validated_data['description_file'] = desc_file_path
 
-		ingest_file_path = stg_unit_folder + '/ingest_file.yml'
-		with open(ingest_file_path, 'w') as ingest_file:
+		ingest_file_path = 'ingest_file.yml'
+		with open(stg_unit_folder + '/' + ingest_file_path, 'w') as ingest_file:
 			desc_io = StringIO(validated_data['ingest_file'].replace('\\n','\n'))
 			base64.decode(desc_io, ingest_file)
 			validated_data['ingest_file'] = ingest_file_path
@@ -44,7 +44,7 @@ class StorageUnitSerializer(serializers.Serializer):
 		validated_data['metadata'] = ''
 		with open(stg_unit_folder + '/description_file.yml', 'r') as metadata_file:
 			metadata = yaml.load(metadata_file)
-			validated_data['metadata'] = metadata
+			validated_data['metadata'] = metadata.get('metadata')
 
 		validated_data['created_by'] = User.objects.get(id=validated_data['created_by'])
 

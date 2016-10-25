@@ -2,7 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from api_rest.models import StorageUnit
 from StringIO import StringIO
-import base64, yaml, os
+import base64, yaml, os, subprocess
+from subprocess import CalledProcessError
 
 class StorageUnitSerializer(serializers.Serializer):
 
@@ -47,5 +48,11 @@ class StorageUnitSerializer(serializers.Serializer):
 			validated_data['metadata'] = metadata.get('metadata')
 
 		validated_data['created_by'] = User.objects.get(id=validated_data['created_by'])
+
+		try:
+			subprocess.check_output(['datacube', 'product', 'add', stg_unit_folder + '/' + desc_file_path])
+		except CalledProcessError as cpe:
+			print "Error creating the storage unit; " + str(cpe)
+			raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')
 
 		return StorageUnit.objects.create(**validated_data)

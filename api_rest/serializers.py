@@ -12,11 +12,22 @@ class StorageUnitSerializer(serializers.Serializer):
 	description = serializers.CharField()
 	description_file = serializers.CharField()
 	ingest_file = serializers.CharField()
+	metadata_generation_script = serializers.CharField()
 	metadata = serializers.JSONField(required=False)
 	root_dir = serializers.CharField(required=False)
 	created_by = serializers.CharField(max_length=200)
 	created_at = serializers.DateTimeField(required=False)
 	updated_at = serializers.DateTimeField(required=False)
+
+	def _b64_to_bin(self, file_path, file_name, b64str):
+
+		try:
+			with open(file_path + '/' + file_name , 'w') as output_file:
+				str_io = StringIO(b64str.replace('\\n','\n'))
+				base64.decode(str_io, output_file)
+				return file_name
+		except:
+			return None
 
 	def create(self, validated_data):
 
@@ -30,27 +41,19 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		validated_data['root_dir'] = stg_unit_folder
 
-		desc_file_path = 'description_file.yml'
-		with open(stg_unit_folder + '/' + desc_file_path , 'w') as desc_file:
-			desc_io = StringIO(validated_data['description_file'].replace('\\n','\n'))
-			base64.decode(desc_io, desc_file)
-			validated_data['description_file'] = desc_file_path
-
-		ingest_file_path = 'ingest_file.yml'
-		with open(stg_unit_folder + '/' + ingest_file_path, 'w') as ingest_file:
-			desc_io = StringIO(validated_data['ingest_file'].replace('\\n','\n'))
-			base64.decode(desc_io, ingest_file)
-			validated_data['ingest_file'] = ingest_file_path
+		validated_data['description_file'] = self._b64_to_bin(stg_unit_folder, 'description_file.yml', validated_data['description_file'])
+		validated_data['ingest_file'] = self._b64_to_bin(stg_unit_folder, 'ingest_file.yml', validated_data['ingest_file'])
+		validated_data['metadata_generation_script'] = self._b64_to_bin(stg_unit_folder, 'mgen_script.py', validated_data['metadata_generation_script'])
 
 		validated_data['metadata'] = ''
-		with open(stg_unit_folder + '/description_file.yml', 'r') as metadata_file:
+		with open(stg_unit_folder + '/' + validated_data['description_file'], 'r') as metadata_file:
 			metadata = yaml.load(metadata_file)
 			validated_data['metadata'] = metadata.get('metadata')
 
 		validated_data['created_by'] = User.objects.get(id=validated_data['created_by'])
 
 		try:
-			subprocess.check_output(['datacube', 'product', 'add', stg_unit_folder + '/' + desc_file_path])
+			subprocess.check_output(['datacube', 'product', 'add', stg_unit_folder + '/' + validated_data['description_file']])
 		except CalledProcessError as cpe:
 			print "Error creating the storage unit; " + str(cpe)
 			raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')

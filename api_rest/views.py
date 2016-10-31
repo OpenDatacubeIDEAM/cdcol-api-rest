@@ -6,7 +6,7 @@ from api_rest.datacube.dc_models import DatasetType
 from api_rest.serializers import StorageUnitSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil
+import shutil, os
 
 # View for swagger documentation
 @api_view()
@@ -35,7 +35,9 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 
 	def perform_destroy(self, instance):
 		root_dir = instance.root_dir
+		stg_name = instance.name
 		DatasetType.objects.filter(name=instance.name)[0].delete()
 		instance.delete()
 		shutil.rmtree(root_dir)
+		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
 		return response.Response(data={'status' : 'Storage Unit Deleted' }, status=status.HTTP_204_NO_CONTENT)

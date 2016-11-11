@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 from api_rest.models import StorageUnit
@@ -6,7 +7,7 @@ from api_rest.datacube.dc_models import DatasetType
 from api_rest.serializers import StorageUnitSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil, os
+import shutil, os, re, glob
 
 # View for swagger documentation
 @api_view()
@@ -41,3 +42,13 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 		shutil.rmtree(root_dir)
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
 		return response.Response(data={'status' : 'Storage Unit Deleted' }, status=status.HTTP_204_NO_CONTENT)
+
+class ContentYearsView(APIView):
+
+	def get(self, request, stg_unit_id):
+		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+		files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+		years = set()
+		for each_file in files:
+			years.add(re.sub(r'^.*_([0-9]{4})[0-9]*\.nc',r'\1',each_file))
+		return response.Response(data={ 'years' : years }, status=status.HTTP_200_OK)

@@ -78,3 +78,8 @@ class ContentImagesView(APIView):
 			if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
 				images.append(each_file)
 		return response.Response(data={'images' : images }, status=status.HTTP_200_OK)
+
+class ContentsView(APIView):
+
+	def get(self, request, stg_unit_id, image_name):
+		return response.Response(data={ 'image' : image_name }, status=status.HTTP_200_OK)

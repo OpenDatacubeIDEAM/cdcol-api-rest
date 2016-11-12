@@ -8,6 +8,7 @@ router.register(r'storage_units', StorageUnitViewSet, base_name='storage_units')
 urlpatterns = [
 	url(r'^', include(router.urls)),
 	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/$', ContentYearsView.as_view()),
-	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/(?P<year>\d+)$', ContentLongLatView.as_view()),
+	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/(?P<year>\d+)/$', ContentLongLatView.as_view()),
+	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/(?P<year>\d+)/(?P<lon_lat>[\w-]+)/$', ContentImagesView.as_view()),
 	url(r'^docs/$', schema_view, name='schema_view'),
 ]

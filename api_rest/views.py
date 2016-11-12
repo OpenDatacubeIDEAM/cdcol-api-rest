@@ -61,8 +61,20 @@ class ContentLongLatView(APIView):
 		coordinates = []
 		lon_lat = set()
 		for each_file in files:
-			lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
+			if re.search(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc', each_file) is not None:
+				lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
 		for each_lon_lat in lon_lat:
 			lon, lat = each_lon_lat.split(';')
 			coordinates.append({'longitude': lon, 'latitude':lat})
 		return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
+
+class ContentImagesView(APIView):
+
+	def get(self, request, stg_unit_id, year, lon_lat):
+		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+		files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+		images = []
+		for each_file in files:
+			if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
+				images.append(each_file)
+		return response.Response(data={'images' : images }, status=status.HTTP_200_OK)

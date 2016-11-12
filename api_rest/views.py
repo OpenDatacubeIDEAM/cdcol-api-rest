@@ -76,7 +76,7 @@ class ContentImagesView(APIView):
 		images = []
 		for each_file in files:
 			if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
-				images.append(each_file)
+				images.append(re.sub(r'.*/([^/]*$)',r'\1',each_file))
 		return response.Response(data={'images' : images }, status=status.HTTP_200_OK)
 
 class ContentsView(APIView):

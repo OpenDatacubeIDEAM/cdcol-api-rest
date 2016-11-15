@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
@@ -56,17 +58,20 @@ class ContentYearsView(APIView):
 class ContentLongLatView(APIView):
 
 	def get(self, request, stg_unit_id, year):
-		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
-		files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
-		coordinates = []
-		lon_lat = set()
-		for each_file in files:
-			if re.search(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc', each_file) is not None:
-				lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
-		for each_lon_lat in lon_lat:
-			lon, lat = each_lon_lat.split(';')
-			coordinates.append({'longitude': lon, 'latitude':lat})
-		return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
+		if re.match(r'[0-9]{4}$', str(year)):
+			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+			coordinates = []
+			lon_lat = set()
+			for each_file in files:
+				if re.search(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc', each_file) is not None:
+					lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
+			for each_lon_lat in lon_lat:
+				lon, lat = each_lon_lat.split(';')
+				coordinates.append({'longitude': lon, 'latitude':lat})
+			return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
+		else:
+			return response.Response(data={ 'status' : 'El año debe ser un entero de 4 digitos' }, status=status.HTTP_400_BAD_REQUEST)
 
 class ContentImagesView(APIView):
 

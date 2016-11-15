@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 from api_rest.models import StorageUnit
-from api_rest.datacube.dc_models import DatasetType
+from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
@@ -82,4 +82,7 @@ class ContentImagesView(APIView):
 class ContentsView(APIView):
 
 	def get(self, request, stg_unit_id, image_name):
-		return response.Response(data={ 'image' : image_name }, status=status.HTTP_200_OK)
+		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+		image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
+		metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
+		return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)

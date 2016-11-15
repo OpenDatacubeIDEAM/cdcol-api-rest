@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'api_rest',
 ]
 
 MIDDLEWARE = [
@@ -77,10 +78,24 @@ WSGI_APPLICATION = 'cdcol.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ['WEB_DBHOST'],
+        'PORT': os.environ['WEB_DBPORT'],
+        'NAME': os.environ['WEB_DBNAME'],
+        'USER': os.environ['WEB_DBUSER'],
+        'PASSWORD': os.environ['WEB_DBPASSWORD'],
+    },
+    'datacube': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ['DATACUBE_DBHOST'],
+        'PORT': os.environ['DATACUBE_DBPORT'],
+        'NAME': os.environ['DATACUBE_DBNAME'],
+        'USER': os.environ['DATACUBE_DBUSER'],
+        'PASSWORD': os.environ['DATACUBE_DBPASSWORD'],
     }
 }
+
+DATABASE_ROUTERS = ['api_rest.datacube.dc_routers.DatacubeRouter']
 
 
 # Password validation

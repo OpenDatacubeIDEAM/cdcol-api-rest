@@ -95,7 +95,10 @@ class ContentImagesView(APIView):
 class ContentsView(APIView):
 
 	def get(self, request, stg_unit_id, image_name):
-		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
-		image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
-		metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
-		return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)
+		if re.match(r'[^/]*.nc', str(image_name)):
+			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+			image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
+			metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
+			return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)
+		else:
+			response.Response(data={ 'status' : 'El formato del archivo no corresponde o contiene caracteres inválidos.' }, status=status.HTTP_400_BAD_REQUEST)

@@ -33,6 +33,15 @@ Con el ambiente virtual activado, se deben instalar todas las dependencias para 
 pip install -r /path/requirements.txt
 ```
 
+## Configuración de variables de entorno
+
+Para poder ejecutar correctamente los sevicios se requiere que se configuren las variables de entorno del archivo `env_vars`. Para cargar las variables en el sistema es necesario utilizar el comando `source`, de lo contrario no estarán disponibles al iniciar el servicio. Se recomienda cargar las variables al inicio de la sesión del usuario agregando la siguiente línea en el archivo `.profile` o `.bashrc`:
+```
+#!bash
+# Exporta las variables de entorno al iniciar sesión
+source /path/to/vars_file/env_vars
+```
+
 ## Despliegue de prueba
 
 Para probar el despliegue sólo es necesario ejecutar el siguiente comando

@@ -1,0 +1,21 @@
+# Load this file with 'source' command
+
+# Connection for Web site database
+export WEB_DBHOST=''
+export WEB_DBPORT=''
+export WEB_DBNAME=''
+export WEB_DBUSER=''
+export WEB_DBPASSWORD=''
+
+# Connection for Datacube database
+export DATACUBE_DBHOST=''
+export DATACUBE_DBPORT=''
+export DATACUBE_DBNAME=''
+export DATACUBE_DBUSER=''
+export DATACUBE_DBPASSWORD=''
+
+# Datacube Storage folder
+export DC_STORAGE=''
+
+# Ingestion folder
+export TO_INGEST=''

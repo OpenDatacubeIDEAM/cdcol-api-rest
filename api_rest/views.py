@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
@@ -56,33 +58,47 @@ class ContentYearsView(APIView):
 class ContentLongLatView(APIView):
 
 	def get(self, request, stg_unit_id, year):
-		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
-		files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
-		coordinates = []
-		lon_lat = set()
-		for each_file in files:
-			if re.search(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc', each_file) is not None:
-				lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
-		for each_lon_lat in lon_lat:
-			lon, lat = each_lon_lat.split(';')
-			coordinates.append({'longitude': lon, 'latitude':lat})
-		return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
+		if re.match(r'[0-9]{4}$', str(year)):
+			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+			coordinates = []
+			lon_lat = set()
+			for each_file in files:
+				if re.search(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc', each_file) is not None:
+					lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
+			for each_lon_lat in lon_lat:
+				lon, lat = each_lon_lat.split(';')
+				coordinates.append({'longitude': lon, 'latitude':lat})
+			return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
+		else:
+			return response.Response(data={ 'status' : 'El año debe ser un entero de 4 digitos' }, status=status.HTTP_400_BAD_REQUEST)
 
 class ContentImagesView(APIView):
 
 	def get(self, request, stg_unit_id, year, lon_lat):
-		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
-		files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
-		images = []
-		for each_file in files:
-			if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
-				images.append(re.sub(r'.*/([^/]*$)',r'\1',each_file))
-		return response.Response(data={'images' : images }, status=status.HTTP_200_OK)
+		if re.match(r'[0-9]{4}$', str(year)) and re.match(r'[-]{0,1}[0-9]+_[-]{0,1}[0-9]+', lon_lat):
+			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+			images = []
+			for each_file in files:
+				if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
+					images.append(re.sub(r'.*/([^/]*$)',r'\1',each_file))
+			return response.Response(data={'images' : images }, status=status.HTTP_200_OK)
+		else:
+			errors = []
+			if re.match(r'[0-9]{4}$', str(year)) is None:
+				errors.append('El año debe ser un entero de 4 digitos')
+			if re.match(r'[-]{0,1}[0-9]+_[-]{0,1}[0-9]+', lon_lat) is None:
+				errors.append('Las coordenadas longitud_latitud deben ser enteros separados por un guion bajo')
+			return response.Response(data={ 'status' : errors }, status=status.HTTP_400_BAD_REQUEST)
 
 class ContentsView(APIView):
 
 	def get(self, request, stg_unit_id, image_name):
-		stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
-		image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
-		metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
-		return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)
+		if re.match(r'[^/]*.nc', str(image_name)):
+			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
+			image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
+			metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
+			return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)
+		else:
+			response.Response(data={ 'status' : 'El formato del archivo no corresponde o contiene caracteres inválidos.' }, status=status.HTTP_400_BAD_REQUEST)

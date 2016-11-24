@@ -9,7 +9,7 @@ from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil, os, re, glob
+import shutil, os, re, glob, yaml
 
 # View for swagger documentation
 @api_view()
@@ -61,6 +61,9 @@ class ContentLongLatView(APIView):
 		if re.match(r'[0-9]{4}$', str(year)):
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+			ingest_file = yaml.load(open(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/ingest_file.yml','r'))
+			base_lon =ingest_file.get('storage')['tile_size']['longitude']
+			base_lat =ingest_file.get('storage')['tile_size']['latitude']
 			coordinates = []
 			lon_lat = set()
 			for each_file in files:
@@ -68,7 +71,7 @@ class ContentLongLatView(APIView):
 					lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
 			for each_lon_lat in lon_lat:
 				lon, lat = each_lon_lat.split(';')
-				coordinates.append({'longitude': lon, 'latitude':lat})
+				coordinates.append({'longitude': (int(lon) * base_lon), 'latitude': (int(lat) * base_lat)})
 			return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
 		else:
 			return response.Response(data={ 'status' : 'El año debe ser un entero de 4 digitos' }, status=status.HTTP_400_BAD_REQUEST)

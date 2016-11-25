@@ -108,6 +108,12 @@ class ContentsView(APIView):
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
 			metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
-			return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)
+			ingest_file = yaml.load(open(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/ingest_file.yml','r'))
+			base_lon =ingest_file.get('storage')['tile_size']['longitude']
+			base_lat =ingest_file.get('storage')['tile_size']['latitude']
+			lon, lat, year = re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_([0-9]{4})[0-9]*\.nc',r'\1;\2;\3', image_name).split(';',2)
+			lon = int(lon) * base_lon
+			lat = int(lat) * base_lat
+			return response.Response(data={ 'image' : image, 'metadata' : metadata, 'coordinates': { 'longitude':lon, 'latitude':lat}, 'year':int(year), 'thumbnails':{'red':'/ruta/thumbnail/red.png', 'blue':'/ruta/thumbnail/red.png','nir':'/ruta/thumbnail/nir.png'} }, status=status.HTTP_200_OK)
 		else:
 			response.Response(data={ 'status' : 'El formato del archivo no corresponde o contiene caracteres inválidos.' }, status=status.HTTP_400_BAD_REQUEST)

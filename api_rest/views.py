@@ -79,12 +79,18 @@ class ContentLongLatView(APIView):
 class ContentImagesView(APIView):
 
 	def get(self, request, stg_unit_id, year, lon_lat):
-		if re.match(r'[0-9]{4}$', str(year)) and re.match(r'[-]{0,1}[0-9]+_[-]{0,1}[0-9]+', lon_lat):
+		if re.match(r'[0-9]{4}$', str(year)) and re.match(r'[-]{0,1}[0-9]+[.]{1}[0-9]+_[-]{0,1}[0-9]+[.]{1}[0-9]+', lon_lat):
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
 			images = []
+			ingest_file = yaml.load(open(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/ingest_file.yml','r'))
+			base_lon =ingest_file.get('storage')['tile_size']['longitude']
+			base_lat =ingest_file.get('storage')['tile_size']['latitude']
+			lon, lat = lon_lat.split('_',1)
+			lon = int(float(lon)/base_lon)
+			lat = int(float(lat)/base_lat)
 			for each_file in files:
-				if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
+				if re.search(r'^.*_' + re.escape(str(lon) + '_' + str(lat)) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
 					images.append(re.sub(r'.*/([^/]*$)',r'\1',each_file))
 			return response.Response(data={'images' : images }, status=status.HTTP_200_OK)
 		else:
@@ -92,7 +98,7 @@ class ContentImagesView(APIView):
 			if re.match(r'[0-9]{4}$', str(year)) is None:
 				errors.append('El año debe ser un entero de 4 digitos')
 			if re.match(r'[-]{0,1}[0-9]+_[-]{0,1}[0-9]+', lon_lat) is None:
-				errors.append('Las coordenadas longitud_latitud deben ser enteros separados por un guion bajo')
+				errors.append('Las coordenadas longitud_latitud deben ser decimales separados por un guion bajo')
 			return response.Response(data={ 'status' : errors }, status=status.HTTP_400_BAD_REQUEST)
 
 class ContentsView(APIView):

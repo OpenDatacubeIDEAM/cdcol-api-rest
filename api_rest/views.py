@@ -114,6 +114,13 @@ class ContentsView(APIView):
 			lon, lat, year = re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_([0-9]{4})[0-9]*\.nc',r'\1;\2;\3', image_name).split(';',2)
 			lon = int(lon) * base_lon
 			lat = int(lat) * base_lat
-			return response.Response(data={ 'image' : image, 'metadata' : metadata, 'coordinates': { 'longitude':lon, 'latitude':lat}, 'year':int(year), 'thumbnails':{'red':'/ruta/thumbnail/red.png', 'blue':'/ruta/thumbnail/red.png','nir':'/ruta/thumbnail/nir.png'} }, status=status.HTTP_200_OK)
+			return response.Response(data={ 'image_uri' : image,
+											'metadata' : metadata,
+											'coordinates': { 'longitude':lon, 'latitude':lat},
+											'year':int(year),
+											'thumbnails':{'red':'/ruta/thumbnail/red.png', 'blue':'/ruta/thumbnail/red.png','nir':'/ruta/thumbnail/nir.png'},
+											'storage_unit':stg_unit_name,
+											'image_name':image_name
+											}, status=status.HTTP_200_OK)
 		else:
 			response.Response(data={ 'status' : 'El formato del archivo no corresponde o contiene caracteres inválidos.' }, status=status.HTTP_400_BAD_REQUEST)

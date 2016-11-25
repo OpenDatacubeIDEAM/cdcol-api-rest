@@ -76,15 +76,20 @@ WSGI_APPLICATION = 'cdcol.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+if os.environ.has_key('WEB_DB_DJ_URL'):
+    default_db = dj_database_url.parse(os.environ['WEB_DB_DJ_URL'])
+else:
+    default_db = {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': os.environ['WEB_DBHOST'],
         'PORT': os.environ['WEB_DBPORT'],
         'NAME': os.environ['WEB_DBNAME'],
         'USER': os.environ['WEB_DBUSER'],
-        'PASSWORD': os.environ['WEB_DBPASSWORD'],
-    },
+        'PASSWORD': os.environ['WEB_DBPASSWORD']
+        }
+
+DATABASES = {
+    'default': default_db,
     'datacube': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': os.environ['DATACUBE_DBHOST'],

@@ -60,6 +60,6 @@ class StorageUnitSerializer(serializers.Serializer):
 			subprocess.check_output(['datacube', 'product', 'add', stg_unit_folder + '/' + validated_data['description_file']])
 		except CalledProcessError as cpe:
 			print "Error creating the storage unit; " + str(cpe)
-			raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')
+			#raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')
 
 		return StorageUnit.objects.create(**validated_data)

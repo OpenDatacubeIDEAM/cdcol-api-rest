@@ -1,6 +1,7 @@
 # Load this file with 'source' command
 
 # Connection for Web site database
+export WEB_DB_DJ_URL=''
 export WEB_DBHOST=''
 export WEB_DBPORT=''
 export WEB_DBNAME=''

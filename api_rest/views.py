@@ -9,7 +9,7 @@ from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil, os, re, glob
+import shutil, os, re, glob, exceptions
 
 # View for swagger documentation
 @api_view()
@@ -39,7 +39,10 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 	def perform_destroy(self, instance):
 		root_dir = instance.root_dir
 		stg_name = instance.name
-		DatasetType.objects.filter(name=instance.name)[0].delete()
+		try:
+			DatasetType.objects.filter(name=instance.name)[0].delete()
+		except exceptions.IndexError:
+			print 'Nothing to delete on the database'
 		instance.delete()
 		shutil.rmtree(root_dir)
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)

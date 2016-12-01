@@ -50,9 +50,15 @@ class StorageUnitSerializer(serializers.Serializer):
 		validated_data['metadata_generation_script'] = self._b64_to_bin(stg_unit_folder, 'mgen_script.py', validated_data['metadata_generation_script'])
 
 		validated_data['metadata'] = ''
-		with open(stg_unit_folder + '/' + validated_data['description_file'], 'r') as metadata_file:
+		with open(stg_unit_folder + '/' + validated_data['ingest_file'], 'r') as metadata_file:
 			metadata = yaml.load(metadata_file)
-			validated_data['metadata'] = metadata.get('metadata')
+			validated_data['metadata'] = {}
+			validated_data['metadata']['measurements'] = []
+			for each_band in metadata.get('measurements'):
+				band = {}
+				band['name'] = each_band['name']
+				band['src_varname'] = each_band['src_varname']
+				validated_data['metadata']['measurements'].append(band)
 
 		validated_data['created_by'] = User.objects.get(id=validated_data['created_by'])
 

@@ -20,3 +20,6 @@ export DC_STORAGE=''
 
 # Ingestion folder
 export TO_INGEST=''
+
+# Web Storage folder
+export WEB_STORAGE=''

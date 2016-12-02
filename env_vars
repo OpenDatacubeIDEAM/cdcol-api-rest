@@ -22,4 +22,4 @@ export DC_STORAGE=''
 export TO_INGEST=''
 
 # Web Storage folder
-export WEB_STORAGE=''
+export WEB_THUMBNAILS=''

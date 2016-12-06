@@ -130,3 +130,9 @@ class ContentsView(APIView):
 											}, status=status.HTTP_200_OK)
 		else:
 			response.Response(data={ 'status' : 'El formato del archivo no corresponde o contiene caracteres inválidos.' }, status=status.HTTP_400_BAD_REQUEST)
+
+class NewExecutionView(APIView):
+
+	def get(self, request):
+
+		return response.Response(data={'status':'OK'}, status=status.HTTP_200_OK)

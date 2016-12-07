@@ -6,10 +6,11 @@ from rest_framework import response, schemas, viewsets, status
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 from api_rest.models import StorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
-from api_rest.serializers import StorageUnitSerializer
+from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
 import shutil, os, re, glob, exceptions, yaml
+from importlib import import_module
 
 # View for swagger documentation
 @api_view()
@@ -134,5 +135,16 @@ class ContentsView(APIView):
 class NewExecutionView(APIView):
 
 	def get(self, request):
+		
+		gtask = import_module(os.environ['GEN_TASK_MOD'])
+		text = gtask.generic_task()
+		return response.Response(data={'status':text}, status=status.HTTP_200_OK)
+	
+	def post(self, request):
 
-		return response.Response(data={'status':'OK'}, status=status.HTTP_200_OK)
+		print request.data
+		serializer = ExecutionSerializer(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

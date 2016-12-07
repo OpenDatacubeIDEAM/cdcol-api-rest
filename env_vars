@@ -25,4 +25,4 @@ export TO_INGEST=''
 export WEB_THUMBNAILS=''
 
 # Celery generic task script
-export CELERY_GEN_TASK=''
+export CELERY_GEN_TASK_SCRIPT=''

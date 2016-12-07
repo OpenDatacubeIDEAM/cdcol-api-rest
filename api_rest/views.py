@@ -10,7 +10,6 @@ from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
 import shutil, os, re, glob, exceptions, yaml
-from importlib import import_module
 
 # View for swagger documentation
 @api_view()
@@ -134,15 +133,8 @@ class ContentsView(APIView):
 
 class NewExecutionView(APIView):
 
-	def get(self, request):
-		
-		gtask = import_module(os.environ['GEN_TASK_MOD'])
-		text = gtask.generic_task()
-		return response.Response(data={'status':text}, status=status.HTTP_200_OK)
-	
 	def post(self, request):
 
-		print request.data
 		serializer = ExecutionSerializer(data=request.data)
 		if serializer.is_valid():
 			serializer.save()

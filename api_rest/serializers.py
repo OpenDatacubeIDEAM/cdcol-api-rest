@@ -4,6 +4,8 @@ from api_rest.models import StorageUnit
 from StringIO import StringIO
 import base64, yaml, os, subprocess
 from subprocess import CalledProcessError
+from importlib import import_module
+from celery import group
 
 class StorageUnitSerializer(serializers.Serializer):
 
@@ -76,20 +78,75 @@ class StorageUnitSerializer(serializers.Serializer):
 	
 class ExecutionSerializer(serializers.Serializer):
 
-		exec_id = serializers.IntegerField(required=False)
-		algorithm = serializers.CharField(max_length=200)
-		version = serializers.CharField(max_length=200)
-		output_expression = serializers.CharField(max_length=200, required=False)
-		product = serializers.CharField(max_length=200)
-		min_lat = serializers.FloatField()
-		max_lat = serializers.FloatField()
-		min_long = serializers.FloatField()
-		max_lat = serializers.FloatField()
-		#time_ranges = serializers.CharField(max_length=200)
-		#**kwargs = serializers.JSONField(required=False)
+	PARAM_TYPES = {
+					'STRING_TYPE':'1',
+					'INTEGER_TYPE':'2',
+					'DOUBLE_TYPE':'3',
+					'BOOLEAN_TYPE':'4',
+					'AREA_TYPE':'7',
+					'STORAGE_UNIT_TYPE':'8',
+					'TIME_PERIOD_TYPE':'9',
+					'FILE_TYPE':'12',
+					'STORAGE_UNIT_SIMPLE_TYPE':'13'
+					}
 
-		def create(self, validated_data):
-			#gtask = import_module(os.environ['GEN_TASK_MOD'])
-			#text = gtask.generic_task(execID, algorithm, version, output_expression, product, min_lat, min_long, time_ranges, **kwargs)
-			#return response.Response(data={'status':text}, status=status.HTTP_200_OK)
-			return {"status":"Done"}
+	execution_id = serializers.IntegerField()
+	algorithm_name = serializers.CharField(max_length=200)
+	version_id = serializers.CharField(max_length=200)
+	parameters = serializers.JSONField()
+
+	def get_product(self, param_dict):
+		for keys in param_dict.keys():
+			if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE'] or param_dict[keys]['type'] == 'STORAGE_UNIT_SIMPLE_TYPE':
+				return param_dict[keys]['storage_unit_name']
+
+	def get_area(self, param_dict):
+		for keys in param_dict.keys():
+			if param_dict[keys]['type'] == self.PARAM_TYPES['AREA_TYPE']:
+				return param_dict[keys]['longitude_start'], param_dict[keys]['longitude_end'], param_dict[keys]['latitude_start'], param_dict[keys]['latitude_end']
+
+	def get_time_periods(self, param_dict):
+		time_periods = []
+		for keys in param_dict.keys():
+			if param_dict[keys]['type'] == self.PARAM_TYPES['TIME_PERIOD_TYPE']:
+				time_periods.append((param_dict[keys]['start_date'], param_dict[keys]['end_date']))
+		return time_periods
+
+	def get_kwargs(self, param_dict):
+		kwargs = {}
+		for keys in param_dict.keys():
+			if param_dict[keys]['type'] == self.PARAM_TYPES['STRING_TYPE']:
+				kwargs[keys] = param_dict[keys]['value']
+			elif param_dict[keys]['type'] == self.PARAM_TYPES['INTEGER_TYPE']:
+				kwargs[keys] = int(param_dict[keys]['value'])
+			elif param_dict[keys]['type'] == self.PARAM_TYPES['DOUBLE_TYPE']:
+				kwargs[keys] = float(param_dict[keys]['value'])
+			elif param_dict[keys]['type'] == self.PARAM_TYPES['BOOLEAN_TYPE']:
+				kwargs[keys] = bool(param_dict[keys]['value'])
+			elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
+				kwargs[keys] = param_dict[keys]['bands'].split(',')
+		return kwargs
+
+	def create(self, validated_data):
+
+		min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
+
+		gtask_parameters = {}
+		gtask_parameters['execID'] = validated_data['execution_id']
+		gtask_parameters['algorithm'] = validated_data['algorithm_name']
+		gtask_parameters['version'] = validated_data['version_id']
+		gtask_parameters['output_expression'] = ''
+		gtask_parameters['product'] = self.get_product(validated_data['parameters'])
+		gtask_parameters['min_lat'] = min_lat
+		gtask_parameters['min_long'] = min_long
+		gtask_parameters['time_ranges'] = self.get_time_periods(validated_data['parameters'])
+		gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
+
+		gtask = import_module(os.environ['GEN_TASK_MOD'])
+
+		for key in gtask_parameters:
+			print 'param \'' + key + '\': ' + str(gtask_parameters[key])
+
+		#result = gtask.generic_task(**gtask_parameters)
+
+		return validated_data

@@ -23,7 +23,7 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		try:
 			with open(file_path + '/' + file_name , 'w') as output_file:
-				str_io = StringIO(b64str.replace('\\n','\n'))
+				sobjecttr_io = StringIO(b64str.replace('\\n','\n'))
 				base64.decode(str_io, output_file)
 				return file_name
 		except:
@@ -73,3 +73,23 @@ class StorageUnitSerializer(serializers.Serializer):
 			#raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')
 
 		return StorageUnit.objects.create(**validated_data)
+	
+class ExecutionSerializer(serializers.Serializer):
+
+		exec_id = serializers.IntegerField(required=False)
+		algorithm = serializers.CharField(max_length=200)
+		version = serializers.CharField(max_length=200)
+		output_expression = serializers.CharField(max_length=200, required=False)
+		product = serializers.CharField(max_length=200)
+		min_lat = serializers.FloatField()
+		max_lat = serializers.FloatField()
+		min_long = serializers.FloatField()
+		max_lat = serializers.FloatField()
+		#time_ranges = serializers.CharField(max_length=200)
+		#**kwargs = serializers.JSONField(required=False)
+
+		def create(self, validated_data):
+			#gtask = import_module(os.environ['GEN_TASK_MOD'])
+			#text = gtask.generic_task(execID, algorithm, version, output_expression, product, min_lat, min_long, time_ranges, **kwargs)
+			#return response.Response(data={'status':text}, status=status.HTTP_200_OK)
+			return {"status":"Done"}

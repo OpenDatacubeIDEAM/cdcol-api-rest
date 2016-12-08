@@ -97,8 +97,10 @@ class ExecutionSerializer(serializers.Serializer):
 
 	def get_product(self, param_dict):
 		for keys in param_dict.keys():
-			if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE'] or param_dict[keys]['type'] == 'STORAGE_UNIT_SIMPLE_TYPE':
-				return param_dict[keys]['storage_unit_name']
+			if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
+				return param_dict[keys]['storage_unit_name'], param_dict[keys]['bands'].split(',')
+			elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
+				return param_dict[keys]['storage_unit_name'], []
 
 	def get_area(self, param_dict):
 		for keys in param_dict.keys():
@@ -123,8 +125,6 @@ class ExecutionSerializer(serializers.Serializer):
 				kwargs[keys] = float(param_dict[keys]['value'])
 			elif param_dict[keys]['type'] == self.PARAM_TYPES['BOOLEAN_TYPE']:
 				kwargs[keys] = bool(param_dict[keys]['value'])
-			elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
-				kwargs[keys] = param_dict[keys]['bands'].split(',')
 		return kwargs
 
 	def create(self, validated_data):
@@ -136,7 +136,7 @@ class ExecutionSerializer(serializers.Serializer):
 		gtask_parameters['algorithm'] = validated_data['algorithm_name']
 		gtask_parameters['version'] = validated_data['version_id']
 		gtask_parameters['output_expression'] = ''
-		gtask_parameters['product'] = self.get_product(validated_data['parameters'])
+		gtask_parameters['product'], gtask_parameters['bands'] = self.get_product(validated_data['parameters'])
 		gtask_parameters['min_lat'] = min_lat
 		gtask_parameters['min_long'] = min_long
 		gtask_parameters['time_ranges'] = self.get_time_periods(validated_data['parameters'])

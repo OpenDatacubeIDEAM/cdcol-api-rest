@@ -132,7 +132,7 @@ class ExecutionSerializer(serializers.Serializer):
 		min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
 
 		gtask_parameters = {}
-		gtask_parameters['execID'] = validated_data['execution_id']
+		gtask_parameters['execID'] = str(validated_data['execution_id'])
 		gtask_parameters['algorithm'] = validated_data['algorithm_name']
 		gtask_parameters['version'] = validated_data['version_id']
 		gtask_parameters['output_expression'] = ''
@@ -146,7 +146,8 @@ class ExecutionSerializer(serializers.Serializer):
 		#	print 'param \'' + key + '\': ' + str(gtask_parameters[key])
 
 		# result = gtask.generic_task(min_long=min_long, min_lat=min_lat, **gtask_parameters)
-
-		result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(min_lat,max_lat) for X in xrange(min_long,max_long)).delay()
+		result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
+		for each_result in result.results:
+			print each_result.id
 
 		return validated_data

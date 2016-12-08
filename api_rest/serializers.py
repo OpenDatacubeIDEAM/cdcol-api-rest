@@ -137,16 +137,16 @@ class ExecutionSerializer(serializers.Serializer):
 		gtask_parameters['version'] = validated_data['version_id']
 		gtask_parameters['output_expression'] = ''
 		gtask_parameters['product'], gtask_parameters['bands'] = self.get_product(validated_data['parameters'])
-		gtask_parameters['min_lat'] = min_lat
-		gtask_parameters['min_long'] = min_long
 		gtask_parameters['time_ranges'] = self.get_time_periods(validated_data['parameters'])
 		gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
 
 		gtask = import_module(os.environ['GEN_TASK_MOD'])
 
-		for key in gtask_parameters:
-			print 'param \'' + key + '\': ' + str(gtask_parameters[key])
+		#for key in gtask_parameters:
+		#	print 'param \'' + key + '\': ' + str(gtask_parameters[key])
 
-		#result = gtask.generic_task(**gtask_parameters)
+		# result = gtask.generic_task(min_long=min_long, min_lat=min_lat, **gtask_parameters)
+
+		result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(min_lat,max_lat) for X in xrange(min_long,max_long)).delay()
 
 		return validated_data

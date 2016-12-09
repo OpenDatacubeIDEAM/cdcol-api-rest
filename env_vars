@@ -1,6 +1,7 @@
 # Load this file with 'source' command
 
 # Connection for Web site database
+export WEB_DB_DJ_URL=''
 export WEB_DBHOST=''
 export WEB_DBPORT=''
 export WEB_DBNAME=''
@@ -19,3 +20,10 @@ export DC_STORAGE=''
 
 # Ingestion folder
 export TO_INGEST=''
+
+# Web Storage folder
+export WEB_THUMBNAILS=''
+
+# Celery generic task script
+export PYTHONPATH=""
+export GEN_TASK_MOD=''

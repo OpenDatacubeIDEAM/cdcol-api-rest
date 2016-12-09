@@ -37,3 +37,6 @@ class StorageUnit(models.Model):
 			print 'Updated at: None'
 		else:
 			print 'Updated at: ' + str(self.updated_at)
+
+	class Meta:
+		db_table = 'storage_storageunit'

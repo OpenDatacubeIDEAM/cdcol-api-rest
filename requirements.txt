@@ -1,8 +1,13 @@
+amqp==1.4.9
+billiard==3.3.0.23
+celery==3.1.23
 coreapi==1.32.3
+dj-database-url==0.4.1
 Django==1.10.1
 django-rest-swagger==2.0.5
 djangorestframework==3.4.6
 itypes==1.1.0
+kombu==3.0.37
 openapi-codec==1.0.0
 psycopg2==2.6.2
 PyYAML==3.12

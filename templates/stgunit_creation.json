@@ -1,0 +1,8 @@
+{
+	"name" : "stgunit_name",
+	"description" : "stgunit_description",
+	"description_file" : "b64 description_file",
+	"ingest_file" : "b64 ingest file",
+	"metadata_generation_script" : "b64 metadada generation script (py)",
+	"created_by" : "user id"
+}

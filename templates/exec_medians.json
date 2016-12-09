@@ -1,0 +1,37 @@
+{
+	"algorithm_name": "medianas",
+	"parameters": {
+		"unidad_almacenamiento":{
+			"bands": "blue,green,red,nir,swir1,swir2",
+			"storage_unit_name": "LS8_OLI_LEDAPS",
+			"type": "8",
+			"function_name": "Almacenamiento Bandas"
+		},
+		"rango_de_tiempo": {
+			"type": "9",
+			"start_date": "2014-01-01",
+			"end_date": "2014-06-30",
+			"function_name": "Tiempo"
+		},
+		"area": {
+			"latitude_start": "1",
+			"latitude_end": "2",
+			"longitude_end": "-69",
+			"longitude_start": "-70",
+			"type": "7",
+			"function_name": "Area"
+		},
+		"minValid": {
+			"type": "2",
+			"value": 1,
+			"function_name": "Integer"
+		},
+		"normalized": {
+			"type": "4",
+			"value": "True",
+			"function_name": "Boolean"
+		}
+	},
+	"version_id": 2,
+	"execution_id": 34
+}

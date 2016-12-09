@@ -9,7 +9,8 @@ urlpatterns = [
 	url(r'^', include(router.urls)),
 	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/$', ContentYearsView.as_view()),
 	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/(?P<year>\d+)/$', ContentLongLatView.as_view()),
-	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/(?P<year>\d+)/(?P<lon_lat>[\w-]+)/$', ContentImagesView.as_view()),
+	url(r'^storage_units/(?P<stg_unit_id>\d+)/years/(?P<year>\d+)/(?P<lon_lat>[\w.-]+)/$', ContentImagesView.as_view()),
 	url(r'^storage_units/(?P<stg_unit_id>\d+)/contents/(?P<image_name>[\w-]+\.nc)/$', ContentsView.as_view()),
+	url(r'^new_execution/', NewExecutionView.as_view()),
 	url(r'^docs/$', schema_view, name='schema_view'),
 ]

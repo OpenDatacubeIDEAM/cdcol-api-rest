@@ -6,10 +6,10 @@ from rest_framework import response, schemas, viewsets, status
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 from api_rest.models import StorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
-from api_rest.serializers import StorageUnitSerializer
+from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil, os, re, glob
+import shutil, os, re, glob, exceptions, yaml
 
 # View for swagger documentation
 @api_view()
@@ -39,7 +39,10 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 	def perform_destroy(self, instance):
 		root_dir = instance.root_dir
 		stg_name = instance.name
-		DatasetType.objects.filter(name=instance.name)[0].delete()
+		try:
+			DatasetType.objects.filter(name=instance.name)[0].delete()
+		except exceptions.IndexError:
+			print 'Nothing to delete on the database'
 		instance.delete()
 		shutil.rmtree(root_dir)
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
@@ -61,6 +64,9 @@ class ContentLongLatView(APIView):
 		if re.match(r'[0-9]{4}$', str(year)):
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
+			ingest_file = yaml.load(open(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/ingest_file.yml','r'))
+			base_lon =ingest_file.get('storage')['tile_size']['longitude']
+			base_lat =ingest_file.get('storage')['tile_size']['latitude']
 			coordinates = []
 			lon_lat = set()
 			for each_file in files:
@@ -68,7 +74,7 @@ class ContentLongLatView(APIView):
 					lon_lat.add(re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_' + re.escape(year) + r'[0-9]*\.nc',r'\1;\2',each_file))
 			for each_lon_lat in lon_lat:
 				lon, lat = each_lon_lat.split(';')
-				coordinates.append({'longitude': lon, 'latitude':lat})
+				coordinates.append({'longitude': (int(lon) * base_lon), 'latitude': (int(lat) * base_lat)})
 			return response.Response(data={ 'coordinates' : coordinates }, status=status.HTTP_200_OK)
 		else:
 			return response.Response(data={ 'status' : 'El año debe ser un entero de 4 digitos' }, status=status.HTTP_400_BAD_REQUEST)
@@ -76,12 +82,18 @@ class ContentLongLatView(APIView):
 class ContentImagesView(APIView):
 
 	def get(self, request, stg_unit_id, year, lon_lat):
-		if re.match(r'[0-9]{4}$', str(year)) and re.match(r'[-]{0,1}[0-9]+_[-]{0,1}[0-9]+', lon_lat):
+		if re.match(r'[0-9]{4}$', str(year)) and re.match(r'[-]{0,1}[0-9]+[.]{1}[0-9]+_[-]{0,1}[0-9]+[.]{1}[0-9]+', lon_lat):
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			files = glob.glob(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/*.nc')
 			images = []
+			ingest_file = yaml.load(open(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/ingest_file.yml','r'))
+			base_lon =ingest_file.get('storage')['tile_size']['longitude']
+			base_lat =ingest_file.get('storage')['tile_size']['latitude']
+			lon, lat = lon_lat.split('_',1)
+			lon = int(float(lon)/base_lon)
+			lat = int(float(lat)/base_lat)
 			for each_file in files:
-				if re.search(r'^.*_' + re.escape(lon_lat) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
+				if re.search(r'^.*_' + re.escape(str(lon) + '_' + str(lat)) + '_' + re.escape(year) + r'[0-9]*\.nc',each_file) is not None:
 					images.append(re.sub(r'.*/([^/]*$)',r'\1',each_file))
 			return response.Response(data={'images' : images }, status=status.HTTP_200_OK)
 		else:
@@ -89,7 +101,7 @@ class ContentImagesView(APIView):
 			if re.match(r'[0-9]{4}$', str(year)) is None:
 				errors.append('El año debe ser un entero de 4 digitos')
 			if re.match(r'[-]{0,1}[0-9]+_[-]{0,1}[0-9]+', lon_lat) is None:
-				errors.append('Las coordenadas longitud_latitud deben ser enteros separados por un guion bajo')
+				errors.append('Las coordenadas longitud_latitud deben ser decimales separados por un guion bajo')
 			return response.Response(data={ 'status' : errors }, status=status.HTTP_400_BAD_REQUEST)
 
 class ContentsView(APIView):
@@ -99,6 +111,32 @@ class ContentsView(APIView):
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
 			metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
-			return response.Response(data={ 'image' : image, 'metadata' : metadata }, status=status.HTTP_200_OK)
+			ingest_file = yaml.load(open(os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/ingest_file.yml','r'))
+			base_lon =ingest_file.get('storage')['tile_size']['longitude']
+			base_lat =ingest_file.get('storage')['tile_size']['latitude']
+			lon, lat, year = re.sub(r'^.*_([\-0-9]*)_([\-0-9]*)_([0-9]{4})[0-9]*\.nc',r'\1;\2;\3', image_name).split(';',2)
+			lon = int(lon) * base_lon
+			lat = int(lat) * base_lat
+			thumbnails = {}
+			for each_thumbnail in glob.glob(os.environ['WEB_THUMBNAILS'] + '/' + stg_unit_name + '/' + image_name.replace('.nc','') + '*.png'):
+				thumbnails[re.sub(r'^.*\.([^.]*)\.png$',r'\1',each_thumbnail)] = each_thumbnail
+			return response.Response(data={ 'image_uri' : image,
+											'metadata' : metadata,
+											'coordinates': { 'longitude':lon, 'latitude':lat},
+											'year':int(year),
+											'thumbnails':thumbnails,
+											'storage_unit':stg_unit_name,
+											'image_name':image_name
+											}, status=status.HTTP_200_OK)
 		else:
 			response.Response(data={ 'status' : 'El formato del archivo no corresponde o contiene caracteres inválidos.' }, status=status.HTTP_400_BAD_REQUEST)
+
+class NewExecutionView(APIView):
+
+	def post(self, request):
+
+		serializer = ExecutionSerializer(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

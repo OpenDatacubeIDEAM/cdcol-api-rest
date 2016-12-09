@@ -14,10 +14,10 @@
 			"function_name": "Tiempo"
 		},
 		"area": {
-			"latitude_start": "-75",
+			"latitude_start": "1",
 			"latitude_end": "2",
 			"longitude_end": "-69",
-			"longitude_start": "2",
+			"longitude_start": "-70",
 			"type": "7",
 			"function_name": "Area"
 		},

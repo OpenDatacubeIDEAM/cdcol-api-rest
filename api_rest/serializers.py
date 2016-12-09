@@ -25,10 +25,11 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		try:
 			with open(file_path + '/' + file_name , 'w') as output_file:
-				sobjecttr_io = StringIO(b64str.replace('\\n','\n'))
+				str_io = StringIO(b64str.replace('\\n','\n'))
 				base64.decode(str_io, output_file)
 				return file_name
-		except:
+		except Exception as e:
+			print 'Error: ' + str(e)
 			return None
 
 	def create(self, validated_data):
@@ -38,7 +39,7 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		stg_unit_folder = os.environ['DC_STORAGE'] + '/' + validated_data['name']
 		to_ingest_folder = os.environ['TO_INGEST'] + '/' + validated_data['name']
-		web_thumbnails_folder = os.environ['WEB_STORAGE'] + '/thumbnails/' + validated_data['name']
+		web_thumbnails_folder = os.environ['WEB_THUMBNAILS'] + '/thumbnails/' + validated_data['name']
 
 		if not os.path.exists(stg_unit_folder):
 			os.makedirs(stg_unit_folder)

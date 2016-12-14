@@ -3,20 +3,12 @@
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
-from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 from api_rest.models import StorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
 import shutil, os, re, glob, exceptions, yaml
-
-# View for swagger documentation
-@api_view()
-@renderer_classes([OpenAPIRenderer, SwaggerUIRenderer])
-def schema_view(request):
-	generator = schemas.SchemaGenerator(title='CDCol API')
-	return response.Response(generator.get_schema(request=request))
 
 # Create your views here.
 class StorageUnitViewSet(viewsets.ModelViewSet):

@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from api_rest.models import StorageUnit
+from api_rest.models import StorageUnit, Execution, Task
 from StringIO import StringIO
-import base64, yaml, os, subprocess
+import base64, yaml, os, subprocess, datetime
 from subprocess import CalledProcessError
 from importlib import import_module
 from celery import group
@@ -25,10 +25,11 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		try:
 			with open(file_path + '/' + file_name , 'w') as output_file:
-				sobjecttr_io = StringIO(b64str.replace('\\n','\n'))
+				str_io = StringIO(b64str.replace('\\n','\n'))
 				base64.decode(str_io, output_file)
 				return file_name
-		except:
+		except Exception as e:
+			print 'Error: ' + str(e)
 			return None
 
 	def create(self, validated_data):
@@ -38,7 +39,7 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		stg_unit_folder = os.environ['DC_STORAGE'] + '/' + validated_data['name']
 		to_ingest_folder = os.environ['TO_INGEST'] + '/' + validated_data['name']
-		web_thumbnails_folder = os.environ['WEB_STORAGE'] + '/thumbnails/' + validated_data['name']
+		web_thumbnails_folder = os.environ['WEB_THUMBNAILS'] + '/' + validated_data['name']
 
 		if not os.path.exists(stg_unit_folder):
 			os.makedirs(stg_unit_folder)
@@ -148,6 +149,16 @@ class ExecutionSerializer(serializers.Serializer):
 		# result = gtask.generic_task(min_long=min_long, min_lat=min_lat, **gtask_parameters)
 		result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
 		for each_result in result.results:
-			print each_result.id
+			new_task = {
+						'uuid':each_result.id,
+						'state':'1',
+						'execution_id':gtask_parameters['execID'],
+						'state_updated_at':str(datetime.datetime.now()),
+						'created_at':str(datetime.datetime.now()),
+						'updated_at':str(datetime.datetime.now()),
+						'start_date':str(datetime.date.today()),
+						'end_date':str(datetime.date.today())
+						}
+			Task.objects.create(**new_task)
 
 		return validated_data

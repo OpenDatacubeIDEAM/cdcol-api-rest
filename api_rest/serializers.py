@@ -39,7 +39,7 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		stg_unit_folder = os.environ['DC_STORAGE'] + '/' + validated_data['name']
 		to_ingest_folder = os.environ['TO_INGEST'] + '/' + validated_data['name']
-		web_thumbnails_folder = os.environ['WEB_THUMBNAILS'] + '/thumbnails/' + validated_data['name']
+		web_thumbnails_folder = os.environ['WEB_THUMBNAILS'] + '/' + validated_data['name']
 
 		if not os.path.exists(stg_unit_folder):
 			os.makedirs(stg_unit_folder)

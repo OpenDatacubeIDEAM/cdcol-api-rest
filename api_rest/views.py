@@ -8,7 +8,8 @@ from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil, os, re, glob, exceptions, yaml
+import shutil, os, re, glob, exceptions, yaml, subprocess
+from subprocess import CalledProcessError
 
 # Create your views here.
 class StorageUnitViewSet(viewsets.ModelViewSet):
@@ -132,3 +133,16 @@ class NewExecutionView(APIView):
 			serializer.save()
 			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
 		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DownloadGeotiff(APIView):
+
+	def post(self, request):
+
+		try:
+			subprocess.check_output(['download_geotiff.sh', request.data['file_path']])
+			return response.Response('{ message : done ' + request.data['file_path'] + ' }', status=status.HTTP_200_OK)
+		except CalledProcessError as cpe:
+			if cpe.returncode == 1:
+				return response.Response('{ message : done ' + request.data['file_path'] + ' }', status=status.HTTP_200_OK)
+			else:
+				return response.Response('{ message : error }', status=status.HTTP_400_BAD_REQUEST)

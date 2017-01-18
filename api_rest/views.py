@@ -140,9 +140,9 @@ class DownloadGeotiff(APIView):
 
 		try:
 			subprocess.check_output(['download_geotiff.sh', request.data['file_path']])
-			return response.Response('{ message : done ' + request.data['file_path'] + ' }', status=status.HTTP_200_OK)
+			return response.Response(data = { 'message' : 'Archivo transformado correctamente a GeoTiff', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
 		except CalledProcessError as cpe:
 			if cpe.returncode == 1:
-				return response.Response('{ message : done ' + request.data['file_path'] + ' }', status=status.HTTP_200_OK)
+				return response.Response(data = { 'message' : 'Archivo transformado correctamente a GeoTiff', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
 			else:
-				return response.Response('{ message : error }', status=status.HTTP_400_BAD_REQUEST)
+				return response.Response(data = { 'message' : 'Error al convertir el archivo' }, status=status.HTTP_400_BAD_REQUEST)

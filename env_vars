@@ -26,3 +26,9 @@ WEB_THUMBNAILS=''
 
 # Celery generic task script
 GEN_TASK_MOD=''
+
+# GIF script
+GEN_GIF_SCRIPT=''
+
+# Results path
+RESULTS=''

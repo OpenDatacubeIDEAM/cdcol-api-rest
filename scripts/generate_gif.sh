@@ -49,3 +49,6 @@ fi
 done
 
 convert -dispose background -delay 100 -loop 0 -coalesce   $TN_FOLDER/*.png $TN_FOLDER/animated.gif
+
+mv $TN_FOLDER/animated.gif $FOLDER/
+rm -rf $TN_FOLDER

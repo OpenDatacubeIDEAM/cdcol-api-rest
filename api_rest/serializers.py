@@ -95,6 +95,7 @@ class ExecutionSerializer(serializers.Serializer):
 	algorithm_name = serializers.CharField(max_length=200)
 	version_id = serializers.CharField(max_length=200)
 	parameters = serializers.JSONField()
+	is_gif = serializers.BooleanField()
 
 	def get_product(self, param_dict):
 		for keys in param_dict.keys():
@@ -149,11 +150,11 @@ class ExecutionSerializer(serializers.Serializer):
 		# result = gtask.generic_task(min_long=min_long, min_lat=min_lat, **gtask_parameters)
 
 		if validated_data['is_gif']:
-			gtask_parameters['min_lat'] = min_lat
-			gtask_parameters['min_long'] = min_long
-			result = group(generic_task.s(time_ranges=[(str(A)+"-01-01",str(A)+"-12-31")], **gtask_parameters) for A in xrange(int(time_ranges[0][0].split('-')[0]),int(time_ranges[0][0].split('-')[0])+1)).delay()
+			gtask_parameters['min_lat'] = int(min_lat)
+			gtask_parameters['min_long'] = int(min_long)
+			result = group(gtask.generic_task.s(time_ranges=[(str(A)+"-01-01",str(A)+"-12-31")], **gtask_parameters) for A in xrange(int(time_ranges[0][0].split('-')[0]),int(time_ranges[0][1].split('-')[0])+1)).delay()
 			result.get(propagate=False)
-			runCmd(execID=gtask_parameters['execID'], cmd=['bash',os.environ['GEN_GIF_SCRIPT'],os.environ['RESULTS']+gtask_parameters['execID']+'/'])
+			gtask.runCmd(execID=gtask_parameters['execID'], cmd=['bash',os.environ['GEN_GIF_SCRIPT'],os.environ['RESULTS']+'/'+gtask_parameters['execID']+'/'])
 			e = Execution.objects.filter(id=gtask_parameters['execID'])[0]
 			e.results_available = True
 			e.finished_at = datetime.datetime.now()

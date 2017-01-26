@@ -142,7 +142,7 @@ class DownloadGeotiff(APIView):
 			return response.Response(data = { 'message' : 'El archivo GeoTiff ya existe', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
 		else:
 			try:
-				subprocess.check_output(['download_geotiff.sh', request.data['file_path']])
+				subprocess.check_output([os.environ['TIFF_CONV_SCRIPT'], request.data['file_path']])
 				return response.Response(data = { 'message' : 'Archivo transformado correctamente a GeoTiff', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
 			except CalledProcessError as cpe:
 				if cpe.returncode == 1:

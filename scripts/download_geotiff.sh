@@ -53,5 +53,6 @@ else
 	gdalbuildvrt -separate $VRT_FILE $GEOTIFF_FILES
 	$PYTHON $METADATA_SCRIPT $VRT_FILE $GEOTIFF_FILES
 	gdal_translate $VRT_FILE ${FILE%.*}.tiff
+	rm $VRT_FILE
 fi
 rm ${FILE%.*}.*.tiff

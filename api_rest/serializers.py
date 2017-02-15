@@ -153,12 +153,18 @@ class ExecutionSerializer(serializers.Serializer):
 			gtask_parameters['min_lat'] = int(min_lat)
 			gtask_parameters['min_long'] = int(min_long)
 			result = group(gtask.generic_task.s(time_ranges=[(str(A)+"-01-01",str(A)+"-12-31")], **gtask_parameters) for A in xrange(int(time_ranges[0][0].split('-')[0]),int(time_ranges[0][1].split('-')[0])+1)).delay()
-			result.get(propagate=False)
-			gtask.runCmd(execID=gtask_parameters['execID'], cmd=['bash',os.environ['GEN_GIF_SCRIPT'],os.environ['RESULTS']+'/'+gtask_parameters['execID']+'/'])
-			e = Execution.objects.filter(id=gtask_parameters['execID'])[0]
-			e.results_available = True
-			e.finished_at = datetime.datetime.now()
-			e.updated_at = datetime.datetime.now()
+			for each_result in result.results:
+				new_task = {
+							'uuid':each_result.id,
+							'state':'1',
+							'execution_id':gtask_parameters['execID'],
+							'state_updated_at':str(datetime.datetime.now()),
+							'created_at':str(datetime.datetime.now()),
+							'updated_at':str(datetime.datetime.now()),
+							'start_date':str(datetime.date.today()),
+							'end_date':str(datetime.date.today())
+							}
+				Task.objects.create(**new_task)
 		else:
 			gtask_parameters['time_ranges'] = time_ranges
 			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()

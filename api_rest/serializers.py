@@ -70,7 +70,7 @@ class StorageUnitSerializer(serializers.Serializer):
 		validated_data['created_by'] = User.objects.get(id=validated_data['created_by'])
 
 		try:
-			subprocess.check_output(['datacube', 'product', 'add', stg_unit_folder + '/' + validated_data['description_file']])
+			subprocess.check_output(['/home/cubo/anaconda2/bin/datacube', 'product', 'add', stg_unit_folder + '/' + validated_data['description_file']])
 		except CalledProcessError as cpe:
 			print "Error creating the storage unit; " + str(cpe)
 			#raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')

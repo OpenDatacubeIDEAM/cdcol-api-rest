@@ -8,7 +8,8 @@ from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
-import shutil, os, re, glob, exceptions, yaml
+import shutil, os, re, glob, exceptions, yaml, subprocess
+from subprocess import CalledProcessError
 
 # Create your views here.
 class StorageUnitViewSet(viewsets.ModelViewSet):
@@ -132,3 +133,19 @@ class NewExecutionView(APIView):
 			serializer.save()
 			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
 		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DownloadGeotiff(APIView):
+
+	def post(self, request):
+
+		if os.path.isfile(request.data['file_path'].replace('.nc','.tiff')):
+			return response.Response(data = { 'message' : 'El archivo GeoTiff ya existe', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
+		else:
+			try:
+				subprocess.check_output([os.environ['TIFF_CONV_SCRIPT'], request.data['file_path']])
+				return response.Response(data = { 'message' : 'Archivo transformado correctamente a GeoTiff', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
+			except CalledProcessError as cpe:
+				if cpe.returncode == 1:
+					return response.Response(data = { 'message' : 'Archivo transformado correctamente a GeoTiff', 'file_path' : request.data['file_path'].replace('.nc','.tiff') }, status=status.HTTP_200_OK)
+				else:
+					return response.Response(data = { 'message' : 'Error al convertir el archivo' }, status=status.HTTP_400_BAD_REQUEST)

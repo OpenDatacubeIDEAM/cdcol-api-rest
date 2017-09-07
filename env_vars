@@ -26,3 +26,12 @@ WEB_THUMBNAILS=''
 
 # Celery generic task script
 GEN_TASK_MOD=''
+
+# Convert NetCDF to Tiff
+TIFF_CONV_SCRIPT=''
+
+# GIF script
+GEN_GIF_SCRIPT=''
+
+# Results path
+RESULTS=''

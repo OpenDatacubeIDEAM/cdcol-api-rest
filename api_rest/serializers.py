@@ -127,6 +127,8 @@ class ExecutionSerializer(serializers.Serializer):
 				kwargs[keys] = float(param_dict[keys]['value'])
 			elif param_dict[keys]['type'] == self.PARAM_TYPES['BOOLEAN_TYPE']:
 				kwargs[keys] = bool(param_dict[keys]['value'])
+			elif param_dict[keys]['type'] == self.PARAM_TYPES['FILE_TYPE']:
+				kwargs[keys] = param_dict[keys]['value']
 		return kwargs
 
 	def create(self, validated_data):

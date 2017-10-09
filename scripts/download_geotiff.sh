@@ -13,7 +13,7 @@ FILE="$1"
 BN=`basename $FILE`
 FOLDER="${1%/$BN}"
 WITH_BANDS_NAME=false
-METADATA_SCRIPT=""# Metadata generation script
+METADATA_SCRIPT=/home/cubo/api-rest/scripts/bands_metadata.py
 
 if `gdalinfo $FILE |grep -q "SUBDATASET.*"`
 then

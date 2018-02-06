@@ -154,7 +154,7 @@ class ExecutionSerializer(serializers.Serializer):
 		if validated_data['is_gif']:
 			gtask_parameters['min_lat'] = int(min_lat)
 			gtask_parameters['min_long'] = int(min_long)
-			result = group(gtask.generic_task.s(time_ranges=[(str(A)+"-01-01",str(A)+"-12-31")], **gtask_parameters) for A in xrange(int(time_ranges[0][0].split('-')[0]),int(time_ranges[0][1].split('-')[0])+1)).delay()
+			result = group(gtask.generic_task.s(time_ranges=[("01-01-"+str(A),+"31-12-"+str(A))], **gtask_parameters) for A in xrange(int(time_ranges[0][0].split('-')[2]),int(time_ranges[0][1].split('-')[2])+1)).delay()
 			for each_result in result.results:
 				new_task = {
 							'uuid':each_result.id,

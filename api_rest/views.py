@@ -138,7 +138,8 @@ class NewExecutionView(APIView):
 
 class CancelExecutionView(APIView):
 	def post(self, request):
-		if Execution.objects.filter(id=request.data.id):
+		execution_id=request.data.id
+		if Execution.objects.filter(id=execution_id):
 			tasks = Task.objects.filter(execution_id=execution_id).update(state='6', state_updated_at=datetime.datetime.now())
 			for task in tasks:
 				revoke(task.uuid,terminate=True)

@@ -3,13 +3,15 @@
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
-from api_rest.models import StorageUnit
+from api_rest.models import StorageUnit, Task, Execution
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
 import shutil, os, re, glob, exceptions, yaml, subprocess
 from subprocess import CalledProcessError
+from celery.task.control import revoke
+import datetime
 
 # Create your views here.
 class StorageUnitViewSet(viewsets.ModelViewSet):
@@ -133,6 +135,19 @@ class NewExecutionView(APIView):
 			serializer.save()
 			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
 		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CancelExecutionView(APIView):
+	def post(self, request):
+		if Execution.objects.filter(id=request.data.id):
+			tasks = Task.objects.filter(execution_id=execution_id).update(state='6', state_updated_at=datetime.datetime.now())
+			for task in tasks:
+				revoke(task.uuid,terminate=True)
+			Execution.objects.filter(id=execution_id).update(state='5')
+			return response.Response(data=execution_id, status=status.HTTP_200_OK)
+		else:
+			return response.Response(data=execution_id, status=status.HTTP_404_NOT_FOUND)
+
+
 
 class DownloadGeotiff(APIView):
 

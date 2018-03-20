@@ -13,4 +13,5 @@ urlpatterns = [
 	url(r'^storage_units/(?P<stg_unit_id>\d+)/contents/(?P<image_name>[\w-]+\.nc)/$', ContentsView.as_view()),
 	url(r'^new_execution/', NewExecutionView.as_view()),
 	url(r'^download_geotiff/', DownloadGeotiff.as_view()),
+	url(r'^cancel_execution/', CancelExecutionView.as_view()),
 ]

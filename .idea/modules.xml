@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/api-rest.iml" filepath="$PROJECT_DIR$/.idea/api-rest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../web-app/.idea/web-app.iml" filepath="$PROJECT_DIR$/../web-app/.idea/web-app.iml" />
     </modules>
   </component>
 </project>

@@ -140,9 +140,12 @@ class CancelExecutionView(APIView):
 	def post(self, request):
 		execution_id=request.data['execution_id']
 		if Execution.objects.filter(id=execution_id):
-			tasks = Task.objects.filter(execution_id=execution_id).update(state='6', state_updated_at=datetime.datetime.now())
+			tasks = Task.objects.filter(execution_id=execution_id)
+			print tasks
 			for t in list(tasks):
 				revoke(t.uuid,terminate=True)
+				print t
+			Task.objects.filter(execution_id=execution_id).update(state='6', state_updated_at=datetime.datetime.now())
 			Execution.objects.filter(id=execution_id).update(state='5')
 			return response.Response(data=execution_id, status=status.HTTP_200_OK)
 		else:

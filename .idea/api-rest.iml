@@ -16,6 +16,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="web-app" />
+    <orderEntry type="module" module-name="CDCol" />
+    <orderEntry type="module" module-name="execution-monitor" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

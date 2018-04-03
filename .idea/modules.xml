@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../CDCol/.idea/CDCol.iml" filepath="$PROJECT_DIR$/../CDCol/.idea/CDCol.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/api-rest.iml" filepath="$PROJECT_DIR$/.idea/api-rest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" filepath="$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/../web-app/.idea/web-app.iml" filepath="$PROJECT_DIR$/../web-app/.idea/web-app.iml" />
     </modules>
   </component>

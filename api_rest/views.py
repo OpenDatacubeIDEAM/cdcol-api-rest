@@ -103,6 +103,7 @@ class ContentsView(APIView):
 
 	def get(self, request, stg_unit_id, image_name):
 		if re.match(r'[^/]*.nc', str(image_name)):
+			stg_unit_alias = StorageUnit.objects.filter(id=stg_unit_id).get().alias
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
 			metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
@@ -121,6 +122,7 @@ class ContentsView(APIView):
 											'year':int(year),
 											'thumbnails':thumbnails,
 											'storage_unit':stg_unit_name,
+											'storage_unit_alias': stg_unit_alias,
 											'image_name':image_name
 											}, status=status.HTTP_200_OK)
 		else:

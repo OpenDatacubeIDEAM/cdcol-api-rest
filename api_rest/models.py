@@ -9,7 +9,7 @@ from rest_framework.renderers import JSONRenderer
 
 # Create your models here.
 class StorageUnit(models.Model):
-	alias = models.CharField(max_length=200, unique=True, blank=True, null=True)
+	alias = models.CharField(max_length=200, unique=True)
 	name = models.CharField(max_length=200, unique=True)
 	description = models.TextField()
 	description_file = models.CharField(max_length=200)

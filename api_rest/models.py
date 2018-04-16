@@ -32,12 +32,13 @@ class StorageUnit(models.Model):
 
 	def print_all(self):
 		print 'Name: ' + self.name
+		print 'Alias: ' +self.alias
 		print 'Description: ' + self.description
 		print 'Description file: ' + self.description_file
 		print 'Ingest file: ' + self.ingest_file
 		print 'Metadata: ' + JSONRenderer().render(self.metadata)
 		print 'Root directory: ' + self.root_dir
-		print 'Created by: ' + self.created_by.username
+		print 'Created by: ' + self.created_by.email
 		if self.created_at is None:
 			print 'Created at: None'
 		else:

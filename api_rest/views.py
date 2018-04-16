@@ -143,12 +143,13 @@ class CancelExecutionView(APIView):
 		execution_id=request.data['execution_id']
 		if Execution.objects.filter(id=execution_id):
 			try:
+				Execution.objects.filter(id=execution_id).update(state='5', finished_at=now, end_date=now)
 				tasks = Task.objects.filter(execution_id=execution_id)
 				for t in list(tasks):
 					revoke(t.uuid, terminate=True)
 				now = datetime.datetime.now()
 				tasks.update(state='6', state_updated_at=now)
-				Execution.objects.filter(id=execution_id).update(state='5', finished_at=now, end_date=now)
+
 				return response.Response(data=execution_id, status=status.HTTP_200_OK)
 			except:
 				return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)

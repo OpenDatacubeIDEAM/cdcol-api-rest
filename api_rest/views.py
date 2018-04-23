@@ -145,7 +145,7 @@ class CancelExecutionView(APIView):
 			try:
 				tasks = Task.objects.filter(execution_id=execution_id)
 				for t in list(tasks):
-					revoke(t.uuid, None, kwargs={'connection': 'amqp://cdcol:cdcol@localhost/cdcol'})
+					revoke(t.uuid)
 
 				return response.Response(data=execution_id, status=status.HTTP_200_OK)
 			except:

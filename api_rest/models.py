@@ -9,6 +9,7 @@ from rest_framework.renderers import JSONRenderer
 
 # Create your models here.
 class StorageUnit(models.Model):
+	alias = models.CharField(max_length=200, unique=True)
 	name = models.CharField(max_length=200, unique=True)
 	description = models.TextField()
 	description_file = models.CharField(max_length=200)
@@ -20,17 +21,24 @@ class StorageUnit(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
+
 	def __unicode__(self):
 		return "{}".format(self.name)
 
+	def save(self, *args, **kwargs):
+		if not self.alias:
+			self.alias = self.name
+		super(StorageUnit, self).save(*args, **kwargs);
+
 	def print_all(self):
 		print 'Name: ' + self.name
+		print 'Alias: ' +self.alias
 		print 'Description: ' + self.description
 		print 'Description file: ' + self.description_file
 		print 'Ingest file: ' + self.ingest_file
 		print 'Metadata: ' + JSONRenderer().render(self.metadata)
 		print 'Root directory: ' + self.root_dir
-		print 'Created by: ' + self.created_by.username
+		print 'Created by: ' + self.created_by.email
 		if self.created_at is None:
 			print 'Created at: None'
 		else:
@@ -136,6 +144,7 @@ class Execution(models.Model):
 	executed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='execution_author')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
+	generate_mosaic = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return "{} - {} - v{}".format(self.id, self.version.algorithm.name, self.version.number)

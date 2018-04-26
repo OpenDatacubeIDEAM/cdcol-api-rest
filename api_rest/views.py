@@ -3,13 +3,15 @@
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
-from api_rest.models import StorageUnit
+from api_rest.models import StorageUnit, Task, Execution
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
 import shutil, os, re, glob, exceptions, yaml, subprocess
 from subprocess import CalledProcessError
+from celery.task.control import revoke
+import datetime
 
 # Create your views here.
 class StorageUnitViewSet(viewsets.ModelViewSet):
@@ -101,6 +103,7 @@ class ContentsView(APIView):
 
 	def get(self, request, stg_unit_id, image_name):
 		if re.match(r'[^/]*.nc', str(image_name)):
+			stg_unit_alias = StorageUnit.objects.filter(id=stg_unit_id).get().alias
 			stg_unit_name = StorageUnit.objects.filter(id=stg_unit_id).get().name
 			image = os.environ['DC_STORAGE'] + '/' + stg_unit_name + '/' + image_name
 			metadata = DatasetLocation.objects.filter(uri_body__contains=image).get().dataset_ref.metadata
@@ -119,6 +122,7 @@ class ContentsView(APIView):
 											'year':int(year),
 											'thumbnails':thumbnails,
 											'storage_unit':stg_unit_name,
+											'storage_unit_alias': stg_unit_alias,
 											'image_name':image_name
 											}, status=status.HTTP_200_OK)
 		else:
@@ -133,6 +137,24 @@ class NewExecutionView(APIView):
 			serializer.save()
 			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
 		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CancelExecutionView(APIView):
+	def post(self, request):
+		execution_id=request.data['execution_id']
+		if Execution.objects.filter(id=execution_id):
+			try:
+				tasks = Task.objects.filter(execution_id=execution_id)
+				for t in list(tasks):
+					revoke(t.uuid)
+
+				return response.Response(data=execution_id, status=status.HTTP_200_OK)
+			except:
+				return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)
+
+		else:
+			return response.Response(data=execution_id, status=status.HTTP_404_NOT_FOUND)
+
+
 
 class DownloadGeotiff(APIView):
 

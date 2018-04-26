@@ -10,6 +10,7 @@ from celery import group
 class StorageUnitSerializer(serializers.Serializer):
 
 	id = serializers.IntegerField(required=False)
+	alias = serializers.CharField(max_length=200)
 	name = serializers.CharField(max_length=200)
 	description = serializers.CharField()
 	description_file = serializers.CharField()

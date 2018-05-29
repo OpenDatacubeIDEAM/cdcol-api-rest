@@ -165,7 +165,9 @@ class ExecutionSerializer(serializers.Serializer):
 							'created_at':str(datetime.datetime.now()),
 							'updated_at':str(datetime.datetime.now()),
 							'start_date':str(datetime.date.today()),
-							'end_date':str(datetime.date.today())
+							'end_date':str(datetime.date.today()),
+							'parameters': each_result.task,
+
 							}
 				Task.objects.create(**new_task)
 		else:
@@ -180,7 +182,8 @@ class ExecutionSerializer(serializers.Serializer):
 							'created_at':str(datetime.datetime.now()),
 							'updated_at':str(datetime.datetime.now()),
 							'start_date':str(datetime.date.today()),
-							'end_date':str(datetime.date.today())
+							'end_date':str(datetime.date.today()),
+							'parameters':each_result.task,
 							}
 				Task.objects.create(**new_task)
 

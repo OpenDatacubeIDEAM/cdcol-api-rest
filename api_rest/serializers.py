@@ -182,9 +182,12 @@ class ExecutionSerializer(serializers.Serializer):
 					'updated_at': str(datetime.datetime.now()),
 					'start_date': str(datetime.date.today()),
 					'end_date': str(datetime.date.today()),
-
+					'parameters': json.dumps(each_result.info),
 				}
 				Task.objects.create(**new_task)
+			
+			#group_results = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat), int(max_lat)) for X in xrange(int(min_long), int(max_long))).delay()
+
 			# for each_result in group_results.tasks:
             #
 			# 	new_task = {

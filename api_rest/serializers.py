@@ -171,22 +171,35 @@ class ExecutionSerializer(serializers.Serializer):
 				Task.objects.create(**new_task)
 		else:
 			gtask_parameters['time_ranges'] = time_ranges
-			group_results = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long)))
-
-			for each_result in group_results.tasks:
-
+			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
+			for each_result in result.results:
 				new_task = {
-							'uuid':each_result.id,
-							'state':'1',
-							'execution_id':gtask_parameters['execID'],
-							'state_updated_at':str(datetime.datetime.now()),
-							'created_at':str(datetime.datetime.now()),
-							'updated_at':str(datetime.datetime.now()),
-							'start_date':str(datetime.date.today()),
-							'end_date':str(datetime.date.today()),
-							'parameters':json.dumps(each_result.kwargs),
-							}
+					'uuid': each_result.id,
+					'state': '1',
+					'execution_id': gtask_parameters['execID'],
+					'state_updated_at': str(datetime.datetime.now()),
+					'created_at': str(datetime.datetime.now()),
+					'updated_at': str(datetime.datetime.now()),
+					'start_date': str(datetime.date.today()),
+					'end_date': str(datetime.date.today()),
+
+				}
 				Task.objects.create(**new_task)
-			result = group_results.delay()
+			# for each_result in group_results.tasks:
+            #
+			# 	new_task = {
+			# 				'uuid':each_result.id,
+			# 				'state':'1',
+			# 				'execution_id':gtask_parameters['execID'],
+			# 				'state_updated_at':str(datetime.datetime.now()),
+			# 				'created_at':str(datetime.datetime.now()),
+			# 				'updated_at':str(datetime.datetime.now()),
+			# 				'start_date':str(datetime.date.today()),
+			# 				'end_date':str(datetime.date.today()),
+			# 				'parameters':json.dumps(each_result.kwargs),
+			# 				}
+			# 	Task.objects.create(**new_task)
+			# result = group_results.delay()
+
 
 		return validated_data

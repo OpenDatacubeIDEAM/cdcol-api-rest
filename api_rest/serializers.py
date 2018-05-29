@@ -171,7 +171,8 @@ class ExecutionSerializer(serializers.Serializer):
 				Task.objects.create(**new_task)
 		else:
 			gtask_parameters['time_ranges'] = time_ranges
-			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
+			group_results = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long)))
+			result = group_results.delay()
 			for each_result in result.results:
 
 				new_task = {
@@ -183,7 +184,7 @@ class ExecutionSerializer(serializers.Serializer):
 							'updated_at':str(datetime.datetime.now()),
 							'start_date':str(datetime.date.today()),
 							'end_date':str(datetime.date.today()),
-							'parameters':json.dumps(each_result),
+							'parameters':json.dumps(each_result.data),
 							}
 				Task.objects.create(**new_task)
 

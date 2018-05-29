@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from api_rest.models import StorageUnit, Execution, Task
 from StringIO import StringIO
-import base64, yaml, os, subprocess, datetime
+import base64, yaml, os, subprocess, datetime, json
 from subprocess import CalledProcessError
 from importlib import import_module
 from celery import group
@@ -183,7 +183,7 @@ class ExecutionSerializer(serializers.Serializer):
 							'updated_at':str(datetime.datetime.now()),
 							'start_date':str(datetime.date.today()),
 							'end_date':str(datetime.date.today()),
-							'parameters':each_result.children,
+							'parameters':json.dumps(each_result),
 							}
 				Task.objects.create(**new_task)
 

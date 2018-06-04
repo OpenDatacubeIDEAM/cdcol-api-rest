@@ -182,7 +182,7 @@ class ExecutionSerializer(serializers.Serializer):
 					'updated_at': str(datetime.datetime.now()),
 					'start_date': str(datetime.date.today()),
 					'end_date': str(datetime.date.today()),
-					'parameters': json.dumps(each_result.info),
+					'parameters': json.dumps(dir(each_result)),
 				}
 				Task.objects.create(**new_task)
 			

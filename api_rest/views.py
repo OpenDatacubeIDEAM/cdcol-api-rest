@@ -3,7 +3,7 @@
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
-from api_rest.models import StorageUnit, Task, Execution
+from api_rest.models import StorageUnit, Task, Execution, VersionStorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
@@ -44,7 +44,7 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 		return response.Response(data={'status' : 'Storage Unit Deleted' }, status=status.HTTP_204_NO_CONTENT)
 
 class VersionStorageUnitView(viewsets.ModelViewSet):
-	queryset = VersionStorageUnitView.objects.all()
+	queryset = VersionStorageUnit.objects.all()
 
 
 class ContentYearsView(APIView):

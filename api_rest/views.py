@@ -43,6 +43,10 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
 		return response.Response(data={'status' : 'Storage Unit Deleted' }, status=status.HTTP_204_NO_CONTENT)
 
+class VersionStorageUnitView(viewsets.ModelViewSet):
+	queryset = VersionStorageUnitView.objects.all()
+
+
 class ContentYearsView(APIView):
 
 	def get(self, request, stg_unit_id):

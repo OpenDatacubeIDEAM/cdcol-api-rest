@@ -4,6 +4,7 @@ from api_rest.views import *
 
 router = routers.DefaultRouter()
 router.register(r'storage_units', StorageUnitViewSet, base_name='storage_units')
+router.register(r'version_storage_unit', VersionStorageUnitView, base_name='version_storage_unit')
 
 urlpatterns = [
 	url(r'^', include(router.urls)),

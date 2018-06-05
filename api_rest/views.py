@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
 from api_rest.models import StorageUnit, Task, Execution, VersionStorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
-from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer, VersionStorageUnitSerializer
+from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
 from StringIO import StringIO
 import shutil, os, re, glob, exceptions, yaml, subprocess
@@ -43,9 +43,6 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
 		return response.Response(data={'status' : 'Storage Unit Deleted' }, status=status.HTTP_204_NO_CONTENT)
 
-class VersionStorageUnitView(viewsets.ModelViewSet):
-	queryset = VersionStorageUnit.objects.all()
-	serializer_class = VersionStorageUnitSerializer
 
 class ContentYearsView(APIView):
 

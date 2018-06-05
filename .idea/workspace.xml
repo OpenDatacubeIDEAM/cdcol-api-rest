@@ -4,7 +4,6 @@
     <list default="true" id="18b96a69-b556-4692-b9de-52ff9c9d8c8c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CDCol/.idea/CDCol.iml" afterPath="$PROJECT_DIR$/../CDCol/.idea/CDCol.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api_rest/serializers.py" afterPath="$PROJECT_DIR$/api_rest/serializers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api_rest/views.py" afterPath="$PROJECT_DIR$/api_rest/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" afterPath="$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../web-app/execution/views.py" afterPath="$PROJECT_DIR$/../web-app/execution/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../web-app/templates/execution/new.html" afterPath="$PROJECT_DIR$/../web-app/templates/execution/new.html" />
@@ -50,8 +49,8 @@
       <file leaf-file-name="serializers.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+            <state relative-caret-position="66">
+              <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -1087,8 +1086,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+        <state relative-caret-position="66">
+          <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
           <folding />
         </state>
       </provider>

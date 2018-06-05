@@ -8,7 +8,7 @@ from importlib import import_module
 from celery import group
 
 class VersionStorageUnitSerializer(serializers.Serializer):
-	version = serializers.JSONField()
+	version = serializers.CharField()
 	storage_unit = serializers.JSONField()
 	created_at = serializers.DateTimeField()
 	updated_at = serializers.DateTimeField()

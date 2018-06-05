@@ -7,6 +7,12 @@ from subprocess import CalledProcessError
 from importlib import import_module
 from celery import group
 
+class VersionStorageUnitSerializer(serializers.Serializer):
+	version = serializers.JSONField()
+	storage_unit = serializers.JSONField()
+	created_at = serializers.DateTimeField()
+	updated_at = serializers.DateTimeField()
+
 class StorageUnitSerializer(serializers.Serializer):
 
 	id = serializers.IntegerField(required=False)

@@ -6,6 +6,7 @@ import base64, yaml, os, subprocess, datetime, json
 from subprocess import CalledProcessError
 from importlib import import_module
 from celery import group
+from urllib2 import urlopen
 
 class StorageUnitSerializer(serializers.Serializer):
 
@@ -146,6 +147,7 @@ class ExecutionSerializer(serializers.Serializer):
 		gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
 
 		gtask = import_module(os.environ['GEN_TASK_MOD'])
+		flower = import_module(os.environ['FLOWER'])
 
 		#for key in gtask_parameters:
 		#	print 'param \'' + key + '\': ' + str(gtask_parameters[key])
@@ -173,6 +175,10 @@ class ExecutionSerializer(serializers.Serializer):
 			gtask_parameters['time_ranges'] = time_ranges
 			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
 			for each_result in result.results:
+				try:
+					task = json.loads(urlopen(flower + '/api/tasks/info/'+each_result.id).read())
+				except:
+					task = {'kwargs':''}
 				new_task = {
 					'uuid': each_result.id,
 					'state': '1',
@@ -182,7 +188,7 @@ class ExecutionSerializer(serializers.Serializer):
 					'updated_at': str(datetime.datetime.now()),
 					'start_date': str(datetime.date.today()),
 					'end_date': str(datetime.date.today()),
-					#'parameters': json.dumps(dir(each_result)),
+					'parameters': json.dumps(task['kwargs']),
 				}
 				Task.objects.create(**new_task)
 			

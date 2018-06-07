@@ -147,7 +147,7 @@ class ExecutionSerializer(serializers.Serializer):
 		gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
 
 		gtask = import_module(os.environ['GEN_TASK_MOD'])
-		flower = os.environ['FLOWER']
+		# flower = os.environ['FLOWER']
 
 		#for key in gtask_parameters:
 		#	print 'param \'' + key + '\': ' + str(gtask_parameters[key])
@@ -175,10 +175,10 @@ class ExecutionSerializer(serializers.Serializer):
 			gtask_parameters['time_ranges'] = time_ranges
 			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
 			for each_result in result.results:
-				try:
-					task = json.loads(urlopen(flower + '/api/task/info/'+each_result.id).read())
-				except:
-					task = {'kwargs':''}
+				# try:
+				# 	task = json.loads(urlopen(flower + '/api/task/info/'+each_result.id).read())
+				# except:
+				# 	task = {'kwargs':''}
 				new_task = {
 					'uuid': each_result.id,
 					'state': '1',
@@ -188,7 +188,7 @@ class ExecutionSerializer(serializers.Serializer):
 					'updated_at': str(datetime.datetime.now()),
 					'start_date': str(datetime.date.today()),
 					'end_date': str(datetime.date.today()),
-					'parameters': json.dumps(each_result.__dict__),
+					#'parameters': json.dumps(each_result.__dict__),
 				}
 				Task.objects.create(**new_task)
 			

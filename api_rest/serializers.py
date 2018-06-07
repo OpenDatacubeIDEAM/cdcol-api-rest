@@ -176,7 +176,7 @@ class ExecutionSerializer(serializers.Serializer):
 			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
 			for each_result in result.results:
 				try:
-					task = json.loads(urlopen(flower + '/api/tasks/info/'+each_result.id).read())
+					task = json.loads(urlopen(flower + '/api/task/info/'+each_result.id).read())
 				except:
 					task = {'kwargs':''}
 				new_task = {

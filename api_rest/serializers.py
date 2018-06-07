@@ -147,7 +147,7 @@ class ExecutionSerializer(serializers.Serializer):
 		gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
 
 		gtask = import_module(os.environ['GEN_TASK_MOD'])
-		flower = import_module(os.environ['FLOWER'])
+		flower = os.environ['FLOWER']
 
 		#for key in gtask_parameters:
 		#	print 'param \'' + key + '\': ' + str(gtask_parameters[key])

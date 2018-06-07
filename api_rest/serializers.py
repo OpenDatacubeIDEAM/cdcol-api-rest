@@ -188,7 +188,7 @@ class ExecutionSerializer(serializers.Serializer):
 					'updated_at': str(datetime.datetime.now()),
 					'start_date': str(datetime.date.today()),
 					'end_date': str(datetime.date.today()),
-					'parameters': json.dumps(task['kwargs']),
+					'parameters': json.dumps(each_result.__dict__),
 				}
 				Task.objects.create(**new_task)
 			

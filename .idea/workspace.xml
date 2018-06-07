@@ -6,7 +6,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api_rest/serializers.py" afterPath="$PROJECT_DIR$/api_rest/serializers.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" afterPath="$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../execution-monitor/entities/Task.py" afterPath="$PROJECT_DIR$/../execution-monitor/entities/Task.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../web-app/ideam_cdc/static_dirs/js/formBuilder.js" afterPath="$PROJECT_DIR$/../web-app/ideam_cdc/static_dirs/js/formBuilder.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,11 +26,21 @@
       <file leaf-file-name="serializers.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="178" column="65" lean-forward="false" selection-start-line="178" selection-start-column="65" selection-end-line="178" selection-end-column="65" />
+            <state relative-caret-position="566">
+              <caret line="200" column="40" lean-forward="true" selection-start-line="200" selection-start-column="40" selection-end-line="200" selection-end-column="40" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../web-app/execution/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="600">
+              <caret line="302" column="53" lean-forward="false" selection-start-line="302" selection-start-column="53" selection-end-line="302" selection-end-column="53" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -69,8 +78,8 @@
       <file leaf-file-name="Task.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../execution-monitor/entities/Task.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="55" column="49" lean-forward="false" selection-start-line="55" selection-start-column="49" selection-end-line="55" selection-end-column="49" />
+            <state relative-caret-position="-384">
+              <caret line="35" column="40" lean-forward="false" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -89,7 +98,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>alias</find>
       <find>self.started_at</find>
       <find>group</find>
       <find>storage_unit_name</find>
@@ -119,6 +127,7 @@
       <find>head_title</find>
       <find>used_credits['credits_consumed__sum']:F</find>
       <find>storage</find>
+      <find>Task</find>
     </findStrings>
     <replaceStrings>
       <replace>name</replace>
@@ -160,7 +169,6 @@
         <option value="$PROJECT_DIR$/../web-app/ingest/admin.py" />
         <option value="$PROJECT_DIR$/../web-app/user_profile/admin.py" />
         <option value="$PROJECT_DIR$/../web-app/execution/admin.py" />
-        <option value="$PROJECT_DIR$/../web-app/execution/models.py" />
         <option value="$PROJECT_DIR$/../web-app/user_profile/models.py" />
         <option value="$PROJECT_DIR$/../web-app/templates/execution/detail.html" />
         <option value="$PROJECT_DIR$/../web-app/execution/serializers.py" />
@@ -178,6 +186,7 @@
         <option value="$PROJECT_DIR$/../web-app/templates/execution/new.html" />
         <option value="$PROJECT_DIR$/../web-app/templates/public/menu_executions.html" />
         <option value="$PROJECT_DIR$/../web-app/ideam_cdc/static_dirs/js/formBuilder.js" />
+        <option value="$PROJECT_DIR$/../web-app/execution/models.py" />
         <option value="$PROJECT_DIR$/../execution-monitor/entities/Task.py" />
         <option value="$PROJECT_DIR$/api_rest/serializers.py" />
       </list>
@@ -770,6 +779,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2638">
           <caret line="37" column="20" lean-forward="false" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -805,13 +815,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
           <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../web-app/execution/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="37" column="20" lean-forward="false" selection-start-line="37" selection-start-column="4" selection-end-line="37" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -854,6 +857,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="352">
           <caret line="127" column="74" lean-forward="true" selection-start-line="120" selection-start-column="0" selection-end-line="127" selection-end-column="74" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -980,16 +984,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../execution-monitor/entities/Task.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="55" column="49" lean-forward="false" selection-start-line="55" selection-start-column="49" selection-end-line="55" selection-end-column="49" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/manage.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1054,10 +1048,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../web-app/execution/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="302" column="53" lean-forward="false" selection-start-line="302" selection-start-column="53" selection-end-line="302" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../execution-monitor/entities/Task.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-384">
+          <caret line="35" column="40" lean-forward="false" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="178" column="65" lean-forward="false" selection-start-line="178" selection-start-column="65" selection-end-line="178" selection-end-column="65" />
+        <state relative-caret-position="566">
+          <caret line="200" column="40" lean-forward="true" selection-start-line="200" selection-start-column="40" selection-end-line="200" selection-end-column="40" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>

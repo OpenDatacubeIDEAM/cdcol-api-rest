@@ -128,8 +128,12 @@ class ExecutionSerializer(serializers.Serializer):
 			elif param_dict[keys]['type'] == self.PARAM_TYPES['DOUBLE_TYPE']:
 				kwargs[keys] = float(param_dict[keys]['value'])
 			elif param_dict[keys]['type'] == self.PARAM_TYPES['BOOLEAN_TYPE']:
-				kwargs[keys] = bool(param_dict[keys]['value'])
-				# kwargs[keys] = param_dict[keys]['value']
+				if param_dict[keys]['value'] == 'True' or param_dict[keys]['value'] == 'true' :
+					kwargs[keys] = True
+				elif param_dict[keys]['value'] == 'False' or param_dict[keys]['value'] == 'false' :
+					kwargs[keys] = False
+				else:
+					kwargs[keys] = bool(param_dict[keys]['value'])
 			elif param_dict[keys]['type'] == self.PARAM_TYPES['FILE_TYPE']:
 				kwargs[keys] = param_dict[keys]['value']
 		return kwargs

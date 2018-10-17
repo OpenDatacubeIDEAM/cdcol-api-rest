@@ -7,7 +7,7 @@
         <option name="settingsModule" value="cdcol/settings.py" />
         <option name="manageScript" value="manage.py" />
         <option name="environment" value="&lt;map/&gt;" />
-        <option name="commandsToSkip" value="" />
+        <option name="doNotUseTestRunner" value="false" />
       </configuration>
     </facet>
   </component>
@@ -19,6 +19,9 @@
     <orderEntry type="module" module-name="web-app" />
     <orderEntry type="module" module-name="CDCol" />
     <orderEntry type="module" module-name="execution-monitor" />
+    <orderEntry type="module" module-name="workflows" />
+    <orderEntry type="module" module-name="ingestion-scheduler" />
+    <orderEntry type="module" module-name="geotiff-converter" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

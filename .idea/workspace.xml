@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="18b96a69-b556-4692-b9de-52ff9c9d8c8c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/api_rest/serializers.py" afterPath="$PROJECT_DIR$/api_rest/serializers.py" />
-      <change beforePath="$PROJECT_DIR$/../workflows/algorithms/joiner-reduce/joiner-reduce_1.0.py" afterPath="$PROJECT_DIR$/../workflows/algorithms/joiner-reduce/joiner-reduce_1.0.py" />
-      <change beforePath="$PROJECT_DIR$/../workflows/algorithms/k-means-wf/k-means-wf_1.0.py" afterPath="$PROJECT_DIR$/../workflows/algorithms/k-means-wf/k-means-wf_1.0.py" />
-      <change beforePath="$PROJECT_DIR$/../workflows/dags/deteccion_de_cambios_pca.py" afterPath="$PROJECT_DIR$/../workflows/dags/deteccion_de_cambios_pca.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../workflows/dags/cdcol_utils/queue_utils.py" />
+      <change beforePath="$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py" afterPath="$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,21 +20,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api_rest/views.py">
+      <file leaf-file-name="compuesto_de_medianas.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="135" column="34" lean-forward="false" selection-start-line="135" selection-start-column="34" selection-end-line="135" selection-end-column="34" />
+            <state relative-caret-position="-589">
+              <caret line="12" column="39" lean-forward="false" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
+      <file leaf-file-name="k_means.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/k_means.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="133" column="40" lean-forward="false" selection-start-line="133" selection-start-column="40" selection-end-line="133" selection-end-column="40" />
+            <state relative-caret-position="500">
+              <caret line="80" column="25" lean-forward="false" selection-start-line="80" selection-start-column="15" selection-end-line="80" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dag_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/cdcol_utils/dag_utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="486">
+              <caret line="33" column="68" lean-forward="false" selection-start-line="33" selection-start-column="68" selection-end-line="33" selection-end-column="68" />
+              <folding>
+                <element signature="e#14#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ndsi.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/ndsi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="265">
+              <caret line="54" column="128" lean-forward="false" selection-start-line="54" selection-start-column="128" selection-end-line="54" selection-end-column="128" />
               <folding />
             </state>
           </provider>
@@ -45,31 +65,49 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../web-app/execution/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1658">
-              <caret line="370" column="59" lean-forward="false" selection-start-line="370" selection-start-column="59" selection-end-line="370" selection-end-column="59" />
+            <state relative-caret-position="669">
+              <caret line="479" column="80" lean-forward="true" selection-start-line="477" selection-start-column="24" selection-end-line="479" selection-end-column="80" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tasks.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../CDCol/cdcol_celery/tasks.py">
+      <file leaf-file-name="queue_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/cdcol_utils/queue_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="36" column="36" lean-forward="false" selection-start-line="36" selection-start-column="36" selection-end-line="36" selection-end-column="36" />
+            <state relative-caret-position="204">
+              <caret line="12" column="32" lean-forward="false" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="medianas_2.1.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../CDCol/algorithms/medianas/medianas_2.1.py">
+      <file leaf-file-name="deteccion_de_cambios_pca.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/deteccion_de_cambios_pca.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="7" selection-end-line="36" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="568">
+              <caret line="83" column="79" lean-forward="false" selection-start-line="83" selection-start-column="57" selection-end-line="83" selection-end-column="81" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clasificador_generico.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/clasificador_generico.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="483">
+              <caret line="81" column="39" lean-forward="true" selection-start-line="81" selection-start-column="15" selection-end-line="81" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="wofs.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../workflows/dags/wofs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="466">
+              <caret line="51" column="38" lean-forward="true" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="38" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -86,7 +124,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>localhost</find>
       <find>flower</find>
       <find>kward</find>
       <find>last_version_id</find>
@@ -116,11 +153,13 @@
       <find>medians1</find>
       <find>new</find>
       <find>normalized</find>
+      <find>airflow_small_tasks</find>
     </findStrings>
     <replaceStrings>
       <replace>name</replace>
       <replace>xarr</replace>
       <replace>xarr0</replace>
+      <replace>airflow_small</replace>
     </replaceStrings>
     <dirStrings>
       <dir>C:\Users\profesor\Documents\repositorios\web-app\public</dir>
@@ -130,12 +169,11 @@
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="DONT_SYNC" />
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../workflows" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../web-app/execution/models.py" />
         <option value="$PROJECT_DIR$/../execution-monitor/entities/Task.py" />
         <option value="$PROJECT_DIR$/../web-app/ideam_cdc/static_dirs/js/formBuilder.js" />
         <option value="$PROJECT_DIR$/../web-app/templates/execution/detail.html" />
@@ -174,7 +212,6 @@
         <option value="$PROJECT_DIR$/../workflows/dags/pruebas/ndsi_multiunidad.py" />
         <option value="$PROJECT_DIR$/../workflows/dags/pruebas/ndvi_multiunidad.py" />
         <option value="$PROJECT_DIR$/../workflows/dags/pruebas/compuesto_de_medianas_multiunidad.py" />
-        <option value="$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py" />
         <option value="$PROJECT_DIR$/../workflows/plugins/cdcol_plugin/operators/reduce_operator.py" />
         <option value="$PROJECT_DIR$/../workflows/dags/k_means.py" />
         <option value="$PROJECT_DIR$/../workflows/dags/ndsi.py" />
@@ -186,6 +223,8 @@
         <option value="$PROJECT_DIR$/../workflows/algorithms/k-means-wf/k-means-wf_1.0.py" />
         <option value="$PROJECT_DIR$/../workflows/dags/deteccion_de_cambios_pca.py" />
         <option value="$PROJECT_DIR$/api_rest/serializers.py" />
+        <option value="$PROJECT_DIR$/../workflows/dags/cdcol_utils/queue_utils.py" />
+        <option value="$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py" />
       </list>
     </option>
   </component>
@@ -196,6 +235,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="570" />
+    <option name="y" value="30" />
     <option name="width" value="600" />
     <option name="height" value="728" />
   </component>
@@ -220,41 +261,22 @@
           <expand>
             <path>
               <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="api-rest" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="api-rest" type="462c0819:PsiDirectoryNode" />
-              <item name="api_rest" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDCol" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDCol" type="462c0819:PsiDirectoryNode" />
-              <item name="algorithms" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDCol" type="462c0819:PsiDirectoryNode" />
-              <item name="algorithms" type="462c0819:PsiDirectoryNode" />
-              <item name="medianas" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CDCol" type="462c0819:PsiDirectoryNode" />
-              <item name="cdcol_celery" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
               <item name="web-app" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web-app" type="462c0819:PsiDirectoryNode" />
-              <item name="execution" type="462c0819:PsiDirectoryNode" />
+              <item name="workflows" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="workflows" type="462c0819:PsiDirectoryNode" />
+              <item name="dags" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="api-rest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="workflows" type="462c0819:PsiDirectoryNode" />
+              <item name="dags" type="462c0819:PsiDirectoryNode" />
+              <item name="cdcol_utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -543,7 +565,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -552,7 +574,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23854166" sideWeight="0.5" order="0" side_tool="true" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27261904" sideWeight="0.5" order="0" side_tool="true" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -588,20 +610,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../workflows/plugins/cdcol_plugin/operators/from_file_operator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-167">
-          <caret line="19" column="65" lean-forward="false" selection-start-line="19" selection-start-column="65" selection-end-line="19" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/pruebas/query_by_year_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="49" lean-forward="false" selection-start-line="26" selection-start-column="49" selection-end-line="26" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../workflows/dags/pruebas/bosque_nobosque_test_reducer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -743,14 +751,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/cdcol_utils/dag_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="60" column="32" lean-forward="true" selection-start-line="60" selection-start-column="32" selection-end-line="60" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../workflows/plugins/cdcol_plugin/operators/reduce_operator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -770,13 +770,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="595">
           <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/bosque_no_bosque.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="60" column="164" lean-forward="false" selection-start-line="60" selection-start-column="164" selection-end-line="60" selection-end-column="164" />
         </state>
       </provider>
     </entry>
@@ -812,20 +805,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/clasificador_generico.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="53" column="74" lean-forward="true" selection-start-line="53" selection-start-column="74" selection-end-line="53" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/wofs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="46" column="124" lean-forward="false" selection-start-line="46" selection-start-column="124" selection-end-line="46" selection-end-column="124" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../workflows/dags/ndvi.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="867">
@@ -842,30 +821,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/ndsi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="54" column="128" lean-forward="false" selection-start-line="54" selection-start-column="128" selection-end-line="54" selection-end-column="128" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/k_means.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="58" column="164" lean-forward="false" selection-start-line="58" selection-start-column="164" selection-end-line="58" selection-end-column="164" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/deteccion_de_cambios_pca.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="33" column="91" lean-forward="false" selection-start-line="33" selection-start-column="91" selection-end-line="33" selection-end-column="91" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../workflows/plugins/cdcol_plugin/operators/query_operator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -874,36 +829,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py">
+    <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="32" column="65" lean-forward="false" selection-start-line="32" selection-start-column="65" selection-end-line="32" selection-end-column="65" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../web-app/execution/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1658">
-          <caret line="370" column="59" lean-forward="false" selection-start-line="370" selection-start-column="59" selection-end-line="370" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../CDCol/algorithms/medianas/medianas_2.1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="7" selection-end-line="36" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../CDCol/cdcol_celery/tasks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="36" column="36" lean-forward="false" selection-start-line="36" selection-start-column="36" selection-end-line="36" selection-end-column="36" />
+        <state relative-caret-position="195">
+          <caret line="121" column="19" lean-forward="true" selection-start-line="121" selection-start-column="19" selection-end-line="121" selection-end-column="19" />
           <folding />
         </state>
       </provider>
@@ -916,10 +845,110 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api_rest/serializers.py">
+    <entry file="file://$PROJECT_DIR$/../CDCol/cdcol_celery/tasks.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="133" column="40" lean-forward="false" selection-start-line="133" selection-start-column="40" selection-end-line="133" selection-end-column="40" />
+        <state relative-caret-position="408">
+          <caret line="36" column="36" lean-forward="false" selection-start-line="36" selection-start-column="36" selection-end-line="36" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CDCol/algorithms/medianas/medianas_2.1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="30" column="18" lean-forward="true" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#19#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/cdcol_utils/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/cdcol_utils/dag_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="33" column="68" lean-forward="false" selection-start-line="33" selection-start-column="68" selection-end-line="33" selection-end-column="68" />
+          <folding>
+            <element signature="e#14#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../web-app/execution/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="669">
+          <caret line="479" column="80" lean-forward="true" selection-start-line="477" selection-start-column="24" selection-end-line="479" selection-end-column="80" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/k_means.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="80" column="25" lean-forward="false" selection-start-line="80" selection-start-column="15" selection-end-line="80" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/ndsi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="54" column="128" lean-forward="false" selection-start-line="54" selection-start-column="128" selection-end-line="54" selection-end-column="128" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/bosque_no_bosque.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="427">
+          <caret line="81" column="34" lean-forward="false" selection-start-line="81" selection-start-column="15" selection-end-line="81" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/clasificador_generico.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="81" column="39" lean-forward="true" selection-start-line="81" selection-start-column="15" selection-end-line="81" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/wofs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="466">
+          <caret line="51" column="38" lean-forward="true" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/deteccion_de_cambios_pca.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="568">
+          <caret line="83" column="79" lean-forward="false" selection-start-line="83" selection-start-column="57" selection-end-line="83" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/cdcol_utils/queue_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="32" lean-forward="false" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../workflows/dags/compuesto_de_medianas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-589">
+          <caret line="12" column="39" lean-forward="false" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
           <folding />
         </state>
       </provider>

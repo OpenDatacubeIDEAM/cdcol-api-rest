@@ -5,7 +5,10 @@
       <module fileurl="file://$PROJECT_DIR$/../CDCol/.idea/CDCol.iml" filepath="$PROJECT_DIR$/../CDCol/.idea/CDCol.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/api-rest.iml" filepath="$PROJECT_DIR$/.idea/api-rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" filepath="$PROJECT_DIR$/../execution-monitor/.idea/execution-monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../geotiff-converter/.idea/geotiff-converter.iml" filepath="$PROJECT_DIR$/../geotiff-converter/.idea/geotiff-converter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ingestion-scheduler/.idea/ingestion-scheduler.iml" filepath="$PROJECT_DIR$/../ingestion-scheduler/.idea/ingestion-scheduler.iml" />
       <module fileurl="file://$PROJECT_DIR$/../web-app/.idea/web-app.iml" filepath="$PROJECT_DIR$/../web-app/.idea/web-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../workflows/.idea/workflows.iml" filepath="$PROJECT_DIR$/../workflows/.idea/workflows.iml" />
     </modules>
   </component>
 </project>

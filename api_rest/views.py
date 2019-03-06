@@ -3,7 +3,7 @@
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
-from api_rest.models import StorageUnit, Task, Execution
+from api_rest.models import StorageUnit, Task, Execution, VersionStorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
@@ -42,6 +42,7 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 		shutil.rmtree(root_dir)
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
 		return response.Response(data={'status' : 'Storage Unit Deleted' }, status=status.HTTP_204_NO_CONTENT)
+
 
 class ContentYearsView(APIView):
 
@@ -146,7 +147,6 @@ class CancelExecutionView(APIView):
 				tasks = Task.objects.filter(execution_id=execution_id)
 				for t in list(tasks):
 					revoke(t.uuid)
-
 				return response.Response(data=execution_id, status=status.HTTP_200_OK)
 			except:
 				return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)

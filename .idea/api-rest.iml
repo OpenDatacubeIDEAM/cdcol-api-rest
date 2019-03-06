@@ -12,12 +12,16 @@
     </facet>
   </component>
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
-    <orderEntry type="inheritedJdk" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
+    </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="web-app" />
     <orderEntry type="module" module-name="CDCol" />
     <orderEntry type="module" module-name="execution-monitor" />
+    <orderEntry type="module" module-name="workflows" />
+    <orderEntry type="module" module-name="ingestion-scheduler" />
+    <orderEntry type="module" module-name="geotiff-converter" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

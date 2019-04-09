@@ -7,8 +7,8 @@ from api_rest.models import StorageUnit, Task, Execution, VersionStorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
 from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
 from rest_framework.parsers import JSONParser
-from StringIO import StringIO
-import shutil, os, re, glob, exceptions, yaml, subprocess
+from io import StringIO
+import shutil, os, re, glob, yaml, subprocess
 from subprocess import CalledProcessError
 from celery.task.control import revoke
 import datetime
@@ -18,26 +18,26 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 	queryset = StorageUnit.objects.all()
 	serializer_class = StorageUnitSerializer
 	
-	def perform_create(self, serializer):
-		if type(self.request.data) is dict:
-			json_content = self.request.data
-		elif type(self.request.data) is str:
-			json_str = self.request.data
-			json_io = StringIO(json_str)
-			json_content = JSONParser().parse(json_io)
-		serializer = StorageUnitSerializer(data=json_content)
-		if serializer.is_valid():
-			storage_unit = serializer.save()
-			serializer = StorageUnitSerializer(storage_unit)
-			return response.Response(data=serializer.data, status=status.HTTP_201_CREATED)
+	# def perform_create(self, serializer):
+	# 	if type(self.request.data) is dict:
+	# 		json_content = self.request.data
+	# 	elif type(self.request.data) is str:
+	# 		json_str = self.request.data
+	# 		json_io = StringIO(json_str)
+	# 		json_content = JSONParser().parse(json_io)
+	# 	serializer = StorageUnitSerializer(data=json_content)
+	# 	if serializer.is_valid():
+	# 		storage_unit = serializer.save()
+	# 		serializer = StorageUnitSerializer(storage_unit)
+	# 		return response.Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
 	def perform_destroy(self, instance):
 		root_dir = instance.root_dir
 		stg_name = instance.name
 		try:
 			DatasetType.objects.filter(name=instance.name)[0].delete()
-		except exceptions.IndexError:
-			print 'Nothing to delete on the database'
+		except IndexError:
+			print('Nothing to delete on the database')
 		instance.delete()
 		shutil.rmtree(root_dir)
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)

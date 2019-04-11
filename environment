@@ -1,22 +1,21 @@
+#!/bin/bash
 # Load this file with 'source' command
 
-# Connection for Web site database
-WEB_DB_DJ_URL=''
-WEB_DBHOST=''
-WEB_DBPORT=''
-WEB_DBNAME=''
-WEB_DBUSER=''
-WEB_DBPASSWORD=''
+WEB_DBHOST=web_db
+WEB_DBPORT=5432
+WEB_DBNAME=cdcol
+WEB_DBUSER=cdcol
+WEB_DBPASSWORD=cdcol
 
 # Connection for Datacube database
-DATACUBE_DBHOST=''
-DATACUBE_DBPORT=''
-DATACUBE_DBNAME=''
-DATACUBE_DBUSER=''
-DATACUBE_DBPASSWORD=''
+DATACUBE_DBHOST=cube_db
+DATACUBE_DBPORT=5432
+DATACUBE_DBNAME=cube
+DATACUBE_DBUSER=cube
+DATACUBE_DBPASSWORD=cube
 
 # Datacube Storage folder
-DC_STORAGE=''
+DC_STORAGE=/dc_storage
 
 # Ingestion folder
 TO_INGEST=''
@@ -34,4 +33,4 @@ TIFF_CONV_SCRIPT=''
 GEN_GIF_SCRIPT=''
 
 # Results path
-RESULTS=''
+RESULTS=/web_storage/results

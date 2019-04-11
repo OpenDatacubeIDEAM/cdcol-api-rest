@@ -2,3 +2,6 @@ api_rest/migrations
 *.pyc
 *.sqlite*
 *.swp
+.idea/
+.env/
+__pycache__/

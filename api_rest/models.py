@@ -31,22 +31,22 @@ class StorageUnit(models.Model):
 		super(StorageUnit, self).save(*args, **kwargs);
 
 	def print_all(self):
-		print 'Name: ' + self.name
-		print 'Alias: ' +self.alias
-		print 'Description: ' + self.description
-		print 'Description file: ' + self.description_file
-		print 'Ingest file: ' + self.ingest_file
-		print 'Metadata: ' + JSONRenderer().render(self.metadata)
-		print 'Root directory: ' + self.root_dir
-		print 'Created by: ' + self.created_by.email
+		print('Name: ' + self.name)
+		print('Alias: ' +self.alias)
+		print('Description: ' + self.description)
+		print('Description file: ' + self.description_file)
+		print('Ingest file: ' + self.ingest_file)
+		print('Metadata: ' + JSONRenderer().render(self.metadata))
+		print('Root directory: ' + self.root_dir)
+		print('Created by: ' + self.created_by.email)
 		if self.created_at is None:
-			print 'Created at: None'
+			print('Created at: None')
 		else:
-			print 'Created at: ' + str(self.created_at)
+			print('Created at: ' + str(self.created_at))
 		if self.updated_at is None:
-			print 'Updated at: None'
+			print('Updated at: None')
 		else:
-			print 'Updated at: ' + str(self.updated_at)
+			print('Updated at: ' + str(self.updated_at))
 
 	class Meta:
 		db_table = 'storage_storageunit'

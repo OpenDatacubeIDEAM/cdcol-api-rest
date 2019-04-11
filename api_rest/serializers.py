@@ -1,12 +1,15 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from api_rest.models import StorageUnit, Execution, Task
-from StringIO import StringIO
+from io import StringIO
 import base64, yaml, os, subprocess, datetime, json
 from subprocess import CalledProcessError
 from importlib import import_module
 from celery import group
-from urllib2 import urlopen
+from urllib.request import urlopen
+
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 
 class StorageUnitSerializer(serializers.Serializer):
 
@@ -14,34 +17,29 @@ class StorageUnitSerializer(serializers.Serializer):
 	alias = serializers.CharField(max_length=200)
 	name = serializers.CharField(max_length=200)
 	description = serializers.CharField()
-	description_file = serializers.CharField()
-	ingest_file = serializers.CharField()
-	metadata_generation_script = serializers.CharField()
+	description_file = serializers.FileField()
+	ingest_file = serializers.FileField()
+	metadata_generation_script = serializers.FileField()
 	metadata = serializers.JSONField(required=False)
 	root_dir = serializers.CharField(required=False)
 	created_by = serializers.CharField(max_length=200)
 	created_at = serializers.DateTimeField(required=False)
 	updated_at = serializers.DateTimeField(required=False)
 
-	def _b64_to_bin(self, file_path, file_name, b64str):
-
-		try:
-			with open(file_path + '/' + file_name , 'w') as output_file:
-				str_io = StringIO(b64str.replace('\\n','\n'))
-				base64.decode(str_io, output_file)
-				return file_name
-		except Exception as e:
-			print 'Error: ' + str(e)
-			return None
-
 	def create(self, validated_data):
 
-		if StorageUnit.objects.filter(name=validated_data['name']).exists():
+		dc_storage_path = os.environ['DC_STORAGE']
+		to_ingest_path = os.environ['TO_INGEST']
+		web_thumbnails_path = os.environ['WEB_THUMBNAILS']
+
+		storage_unit_name = validated_data['name']
+
+		if StorageUnit.objects.filter(name=storage_unit_name).exists():
 			raise serializers.ValidationError('The Storage Unit Already Exists')
 
-		stg_unit_folder = os.environ['DC_STORAGE'] + '/' + validated_data['name']
-		to_ingest_folder = os.environ['TO_INGEST'] + '/' + validated_data['name']
-		web_thumbnails_folder = os.environ['WEB_THUMBNAILS'] + '/' + validated_data['name']
+		stg_unit_folder = os.path.join(dc_storage_path,storage_unit_name)
+		to_ingest_folder = os.path.join(to_ingest_path,storage_unit_name)
+		web_thumb_folder = os.path.join(web_thumbnails_path,storage_unit_name)
 
 		if not os.path.exists(stg_unit_folder):
 			os.makedirs(stg_unit_folder)
@@ -49,17 +47,32 @@ class StorageUnitSerializer(serializers.Serializer):
 		if not os.path.exists(to_ingest_folder):
 			os.makedirs(to_ingest_folder)
 
-		if not os.path.exists(web_thumbnails_folder):
-			os.makedirs(web_thumbnails_folder)
+		if not os.path.exists(web_thumb_folder):
+			os.makedirs(web_thumb_folder)
+
+		descrip_mfile = validated_data['description_file']
+		ingest_mfile = validated_data['ingest_file']
+		meta_gen_script_mfile = validated_data['metadata_generation_script']
+
+		descrip_path = os.path.join(stg_unit_folder,'description_file.yml')
+		ingest_path = os.path.join(stg_unit_folder,'ingest_file.yml')
+		meta_gen_script_path = os.path.join(stg_unit_folder,'mgen_script.py')
+
+		# Save files into the dc_storage
+		with open(descrip_path,'wb') as dfile:
+			dfile.write(descrip_mfile.read())
+
+		with open(ingest_path,'wb') as ifile:
+			ifile.write(ingest_mfile.read())
+
+		with open(meta_gen_script_path,'wb') as mfile:
+			mfile.write(meta_gen_script_mfile.read())
 
 		validated_data['root_dir'] = stg_unit_folder
-
-		validated_data['description_file'] = self._b64_to_bin(stg_unit_folder, 'description_file.yml', validated_data['description_file'])
-		validated_data['ingest_file'] = self._b64_to_bin(stg_unit_folder, 'ingest_file.yml', validated_data['ingest_file'])
-		validated_data['metadata_generation_script'] = self._b64_to_bin(stg_unit_folder, 'mgen_script.py', validated_data['metadata_generation_script'])
+		ingest_file_path = os.path.join(stg_unit_folder,'ingest_file.yml')
 
 		validated_data['metadata'] = ''
-		with open(stg_unit_folder + '/' + validated_data['ingest_file'], 'r') as metadata_file:
+		with open(ingest_file_path, 'r') as metadata_file:
 			metadata = yaml.load(metadata_file)
 			validated_data['metadata'] = {}
 			validated_data['metadata']['measurements'] = []
@@ -70,15 +83,23 @@ class StorageUnitSerializer(serializers.Serializer):
 				validated_data['metadata']['measurements'].append(band)
 
 		validated_data['created_by'] = User.objects.get(id=validated_data['created_by'])
+		description_file_path = os.path.join(stg_unit_folder,'description_file.yml')
 
 		try:
-			subprocess.check_output(['/home/cubo/anaconda2/bin/datacube', 'product', 'add', stg_unit_folder + '/' + validated_data['description_file']])
+			subprocess.check_output(
+				['/root/anaconda/bin/datacube', 'product', 'add', description_file_path]
+			)
 		except CalledProcessError as cpe:
-			print "Error creating the storage unit; " + str(cpe)
+			print("Error creating the storage unit; " + str(cpe))
 			#raise serializers.ValidationError('Error creating the Storage Unit in the Data Cube')
 
+		validated_data['description_file'] = 'description_file.yml'
+		validated_data['ingest_file'] = 'ingest_file.yml'
+		validated_data['metadata_generation_script'] = 'mgen_script.py'
+
 		return StorageUnit.objects.create(**validated_data)
-	
+
+
 class ExecutionSerializer(serializers.Serializer):
 
 	PARAM_TYPES = {

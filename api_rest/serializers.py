@@ -1,14 +1,16 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from api_rest.models import StorageUnit, Execution, Task
+from api_rest.models import StorageUnit, Execution, Task, Version
 from io import StringIO
 import base64, yaml, os, subprocess, datetime, json
 from subprocess import CalledProcessError
 from importlib import import_module
 from urllib.request import urlopen
-
+from jinja2 import Environment, FileSystemLoader
+import zipfile
 from airflow.bin import cli
 import argparse
+import shutil
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -165,7 +167,7 @@ class ExecutionSerializer(serializers.Serializer):
 
 		# TODO: Importar Jinja 2
 		# TODO: Crear el diccionario
-		execution = get_object_or_404(Execution, pk=validated_data['execution_id'])
+		execution = Execution.objects.filter(pk=validated_data['execution_id'])
 		min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
 		params = dict(self.get_kwargs(validated_data['parameters']))
 		params['lat'] = (min_lat, max_lat)
@@ -282,3 +284,42 @@ class ExecutionSerializer(serializers.Serializer):
 
 		return validated_data
 
+class AlgorithmSerializer(serializers.Serializer):
+    version_id = serializers.IntegerField(required=False)
+    algorithms_zip_file = serializers.FileField()
+    template_file = serializers.FileField()
+
+    def create(self, validated_data):
+        extraction_path = os.path.join(os.environ['DOWNLOAD_PATH'], validated_data["algorithm_id"])
+        version = Version.objects.filter(id=validated_data["version_id"])
+        with zipfile.ZipFile(validated_data["algorithms_zip_file"], "r") as file_to_extract:
+            file_to_extract.extractall(extraction_path)
+
+        # TODO: Poner el template en la carpeta templates
+        template_path = os.path.join(os.environ['TEMPLATE_PATH'], version.algorithm.name)
+        if not os.path.isdir(template_path):
+            os.makedirs(template_path)
+
+        with open(os.path.join(template_path,"{}_{}".format(version.algorithm.name, version.number)), 'wb') as tfile:
+            tfile.write(validated_data["template_file"].read())
+        tfile.close()
+        # TODO: Poner los algoritmos en la caprta de algoritmos
+        for file in os.listdir(extraction_path):
+            if os.path.isdir(file):
+                algorithm_path = os.path.join(os.environ['WORKFLOW_ALGORITHMS_PATH'],file)
+                if not os.path.isdir(algorithm_path):
+                    os.makedirs(template_path)
+                for alg_file in os.listdir(os.path.join(extraction_path, file)):
+                    if alg_file.endswith(".py"):
+                        # TODO: Revisar que no hayan algoritmos con el mismo nombre
+                        if os.path.exists(os.path.join(algorithm_path, alg_file)):
+                            raise serializers.ValidationError('El algoritmo {} ya existe en la carpeta {}'.format(file,os.path.join(algorithm_path, alg_file)))
+                        else:
+                            with open(os.path.join(algorithm_path, alg_file),'wb') as afile:
+                                f = open(os.path.join(extraction_path, file), "r")
+                                afile.write(f.read())
+                                f.close()
+                            afile.close()
+
+        shutil.rmtree(extraction_path)
+        return validated_data

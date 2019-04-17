@@ -5,12 +5,16 @@ from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
 from api_rest.models import StorageUnit, Task, Execution, VersionStorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
-from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
+from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer, AlgorithmSerializer
 from rest_framework.parsers import JSONParser
 from io import StringIO
 import shutil, os, re, glob, yaml, subprocess
 from subprocess import CalledProcessError
+from airflow import models,settings
+from airflow.api.common.experimental import mark_tasks
+from airflow.models import DagRun
 from celery.task.control import revoke
+import shutil
 import datetime
 
 # Create your views here.
@@ -142,21 +146,35 @@ class NewExecutionView(APIView):
 class CancelExecutionView(APIView):
 	def post(self, request):
 		execution_id=request.data['execution_id']
-		if Execution.objects.filter(id=execution_id):
+		execution = Execution.objects.filter(id=execution_id)
+		if execution.exists():
+			dagbag = models.DagBag(settings.DAGS_FOLDER)
+			dag = dagbag.get_dag(execution.dag_id)
+			dr_list = DagRun.find(dag_id=execution.dag_id)
+			dr = dr_list[-1]
 			try:
-				tasks = Task.objects.filter(execution_id=execution_id)
-				for t in list(tasks):
-					revoke(t.uuid)
-				return response.Response(data=execution_id, status=status.HTTP_200_OK)
+				mark_tasks.set_dag_run_state_to_failed(dag=dag, execution_date=dr.execution_date, commit=True)
 			except:
 				return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)
+			shutil.rmtree(os.path.join(os.environ['RESULTS']),execution.dag_id)
+			# try:
+			# 	tasks = Task.objects.filter(execution_id=execution_id)
+			# 	for t in list(tasks):
+			# 		revoke(t.uuid)
+			# 	return response.Response(data=execution_id, status=status.HTTP_200_OK)
+			# except:
+			# 	return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)
 
 		else:
 			return response.Response(data=execution_id, status=status.HTTP_404_NOT_FOUND)
 
 class PublishNewAlgorithmView(APIView):
 	def post(self, request):
-		return response.Response(data='', status=status.HTTP_200_OK)
+		serializer = AlgorithmSerializer(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return response.Response(serializer.data, status=status.HTTP_200_OK)
+		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DownloadGeotiff(APIView):

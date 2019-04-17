@@ -34,3 +34,15 @@ GEN_GIF_SCRIPT=''
 
 # Results path
 RESULTS=/web_storage/results
+
+#Airflow dag path
+AIRFLOW_DAG_PATH=''
+
+#Template Path
+TEMPLATE_PATH=''
+
+#Donwload Path
+DOWNLOAD_PATH=''
+
+#Workflow Algorithms Path
+WORKFLOW_ALGORITHMS_PATH=''

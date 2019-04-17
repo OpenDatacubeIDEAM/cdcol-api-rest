@@ -154,6 +154,9 @@ class CancelExecutionView(APIView):
 		else:
 			return response.Response(data=execution_id, status=status.HTTP_404_NOT_FOUND)
 
+class PublishNewAlgorithmView(APIView):
+	def post(self, request):
+		return response.Response(data='', status=status.HTTP_200_OK)
 
 
 class DownloadGeotiff(APIView):

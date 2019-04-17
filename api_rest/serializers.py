@@ -5,8 +5,10 @@ from io import StringIO
 import base64, yaml, os, subprocess, datetime, json
 from subprocess import CalledProcessError
 from importlib import import_module
-from celery import group
 from urllib.request import urlopen
+
+from airflow.bin import cli
+import argparse
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -161,80 +163,122 @@ class ExecutionSerializer(serializers.Serializer):
 
 	def create(self, validated_data):
 
+		# TODO: Importar Jinja 2
+		# TODO: Crear el diccionario
+		execution = get_object_or_404(Execution, pk=validated_data['execution_id'])
 		min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
-		time_ranges = self.get_time_periods(validated_data['parameters'])
+		params = dict(self.get_kwargs(validated_data['parameters']))
+		params['lat'] = (min_lat, max_lat)
+		params['lon'] = (min_long, max_long)
+		params['product'], params['bands'] = self.get_product(validated_data['parameters'])
+		params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
+		params['execID'] = 'execution_{}_{}_{}'.format(str(validated_data['execution_id']),
+													   validated_data['algorithm_name'], validated_data['version_id'])
+		#params['owner'] = Execution.executed_by.
+		params['owner'] = "API-REST"
+		# TODO: Cargar el template
+		template_path = os.path.join(os.environ['TEMPLATE_PATH'], validated_data['algorithm_name'])
+		generic_template_path=os.path.join(os.environ['TEMPLATE_PATH'], "generic-template")
 
-		gtask_parameters = {}
-		gtask_parameters['execID'] = str(validated_data['execution_id'])
-		gtask_parameters['algorithm'] = validated_data['algorithm_name']
-		gtask_parameters['version'] = validated_data['version_id']
-		gtask_parameters['output_expression'] = ''
-		gtask_parameters['product'], gtask_parameters['bands'] = self.get_product(validated_data['parameters'])
-		gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
+		if(execution.version.exists() and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(template_path)):
+			file_loader = FileSystemLoader(template_path)
+			env = Environment(loader=file_loader)
+			algorithm_template_path = '{}_{}'.format(validated_data['algorithm_name'], validated_data['version_id'])
+			template = env.get_template(algorithm_template_path)
+		else:
+			file_loader = FileSystemLoader(generic_template_path)
+			env = Environment(loader=file_loader)
+			algorithm_template_path = '{}_{}'.format("generic-template", "1.0")
+			params['algorithm_name'] = validated_data['algorithm_name']
+			params['version_id'] = validated_data['version_id']
+			template = env.get_template(algorithm_template_path)
 
-		gtask = import_module(os.environ['GEN_TASK_MOD'])
-		# flower = os.environ['FLOWER']
+		# TODO: Renderizar el template
+		airflow_dag_path = os.environ['AIRFLOW_DAG_PATH']
+		execution_dag_path = '{}/execution_{}_{}_{}.py'.format(airflow_dag_path, str(validated_data['execution_id']),
+															   validated_data['algorithm_name'],
+															   validated_data['version_id'])
+		output = template.render(params=params)
+		with open(execution_dag_path, 'w') as dag:
+			dag.write(output)
+			execution.dag_id = params['execID']
+			execution.save()
+			args=argparse.Namespace()
+			args.dag_id = params['execID']
+			args.run_id = None
+			args.exec_id = None
+			args.con = None
+			cli.trigger_dag(args)
+		# TODO: Ejecutar workflow
 
-		#for key in gtask_parameters:
+		bash_command1 = 'airflow list_dags'
+		bash_command2 = 'airflow unpause' + params['execID']
+		bash_command3 = 'airflow trigger_dag ' + params['execID']
+
+		subprocess.call(bash_command1.split())
+		subprocess.call(bash_command2.split())
+		subprocess.call(bash_command3.split())
+
+		# TODO: Modificar la ejecución en la base de datos
+
+		# time_ranges = self.get_time_periods(validated_data['parameters'])
+		#
+		# gtask_parameters = {}
+		# gtask_parameters['execID'] = str(validated_data['execution_id'])
+		# gtask_parameters['algorithm'] = validated_data['algorithm_name']
+		# gtask_parameters['version'] = validated_data['version_id']
+		# gtask_parameters['output_expression'] = ''
+		# gtask_parameters['product'], gtask_parameters['bands'] = self.get_product(validated_data['parameters'])
+		# gtask_parameters = dict(self.get_kwargs(validated_data['parameters']), **gtask_parameters)
+		#
+		# gtask = import_module(os.environ['GEN_TASK_MOD'])
+		# # flower = os.environ['FLOWER']
+
+		# for key in gtask_parameters:
 		#	print 'param \'' + key + '\': ' + str(gtask_parameters[key])
 
 		# result = gtask.generic_task(min_long=min_long, min_lat=min_lat, **gtask_parameters)
 
-		if validated_data['is_gif']:
-			gtask_parameters['min_lat'] = int(min_lat)
-			gtask_parameters['min_long'] = int(min_long)
-			result = group(gtask.generic_task.s(time_ranges=[("01-01-"+str(A),+"31-12-"+str(A))], **gtask_parameters) for A in xrange(int(time_ranges[0][0].split('-')[2]),int(time_ranges[0][1].split('-')[2])+1)).delay()
-			for each_result in result.results:
-				new_task = {
-							'uuid':each_result.id,
-							'state':'1',
-							'execution_id':gtask_parameters['execID'],
-							'state_updated_at':str(datetime.datetime.now()),
-							'created_at':str(datetime.datetime.now()),
-							'updated_at':str(datetime.datetime.now()),
-							'start_date':str(datetime.date.today()),
-							'end_date':str(datetime.date.today()),
-
-							}
-				Task.objects.create(**new_task)
-		else:
-			gtask_parameters['time_ranges'] = time_ranges
-			result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat),int(max_lat)) for X in xrange(int(min_long),int(max_long))).delay()
-			for each_result in result.results:
-				# try:
-				# 	task = json.loads(urlopen(flower + '/api/task/info/'+each_result.id).read())
-				# except:
-				# 	task = {'kwargs':''}
-				new_task = {
-					'uuid': each_result.id,
-					'state': '1',
-					'execution_id': gtask_parameters['execID'],
-					'state_updated_at': str(datetime.datetime.now()),
-					'created_at': str(datetime.datetime.now()),
-					'updated_at': str(datetime.datetime.now()),
-					'start_date': str(datetime.date.today()),
-					'end_date': str(datetime.date.today()),
-					#'parameters': json.dumps(each_result.__dict__),
-				}
-				Task.objects.create(**new_task)
-			
-			#group_results = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in xrange(int(min_lat), int(max_lat)) for X in xrange(int(min_long), int(max_long))).delay()
-
-			# for each_result in group_results.tasks:
-            #
-			# 	new_task = {
-			# 				'uuid':each_result.id,
-			# 				'state':'1',
-			# 				'execution_id':gtask_parameters['execID'],
-			# 				'state_updated_at':str(datetime.datetime.now()),
-			# 				'created_at':str(datetime.datetime.now()),
-			# 				'updated_at':str(datetime.datetime.now()),
-			# 				'start_date':str(datetime.date.today()),
-			# 				'end_date':str(datetime.date.today()),
-			# 				'parameters':json.dumps(each_result.kwargs),
-			# 				}
-			# 	Task.objects.create(**new_task)
-			# result = group_results.delay()
-
+		# if validated_data['is_gif']:
+		#     gtask_parameters['min_lat'] = int(min_lat)
+		#     gtask_parameters['min_long'] = int(min_long)
+		#     result = group(
+		#         gtask.generic_task.s(time_ranges=[("01-01-" + str(A), +"31-12-" + str(A))], **gtask_parameters) for A in
+		#         xrange(int(time_ranges[0][0].split('-')[2]), int(time_ranges[0][1].split('-')[2]) + 1)).delay()
+		#     for each_result in result.results:
+		#         new_task = {
+		#             'uuid': each_result.id,
+		#             'state': '1',
+		#             'execution_id': gtask_parameters['execID'],
+		#             'state_updated_at': str(datetime.datetime.now()),
+		#             'created_at': str(datetime.datetime.now()),
+		#             'updated_at': str(datetime.datetime.now()),
+		#             'start_date': str(datetime.date.today()),
+		#             'end_date': str(datetime.date.today()),
+		#
+		#         }
+		#         Task.objects.create(**new_task)
+		# else:
+		#     gtask_parameters['time_ranges'] = time_ranges
+		#     result = group(gtask.generic_task.s(min_lat=Y, min_long=X, **gtask_parameters) for Y in
+		#                    xrange(int(min_lat), int(max_lat)) for X in xrange(int(min_long), int(max_long))).delay()
+		#     for each_result in result.results:
+		#         # try:
+		#         # 	task = json.loads(urlopen(flower + '/api/task/info/'+each_result.id).read())
+		#         # except:
+		#         # 	task = {'kwargs':''}
+		#         new_task = {
+		#             'uuid': each_result.id,
+		#             'state': '1',
+		#             'execution_id': gtask_parameters['execID'],
+		#             'state_updated_at': str(datetime.datetime.now()),
+		#             'created_at': str(datetime.datetime.now()),
+		#             'updated_at': str(datetime.datetime.now()),
+		#             'start_date': str(datetime.date.today()),
+		#             'end_date': str(datetime.date.today()),
+		#             # 'parameters': json.dumps(each_result.__dict__),
+		#         }
+		#         Task.objects.create(**new_task)
 
 		return validated_data
+

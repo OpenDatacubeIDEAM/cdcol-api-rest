@@ -14,4 +14,5 @@ urlpatterns = [
 	url(r'^new_execution/', NewExecutionView.as_view()),
 	url(r'^download_geotiff/', DownloadGeotiff.as_view()),
 	url(r'^cancel_execution/', CancelExecutionView.as_view()),
+	url(r'^algorithms/publish/', PublishNewAlgorithmView.as_view()),
 ]

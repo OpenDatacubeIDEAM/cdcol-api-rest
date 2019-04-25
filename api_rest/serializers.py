@@ -168,6 +168,7 @@ class ExecutionSerializer(serializers.Serializer):
 		# TODO: Importar Jinja 2
 		# TODO: Crear el diccionario
 		execution = Execution.objects.get(pk=validated_data['execution_id'])
+
 		min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
 		params = dict(self.get_kwargs(validated_data['parameters']))
 		params['lat'] = (min_lat, max_lat)
@@ -182,7 +183,7 @@ class ExecutionSerializer(serializers.Serializer):
 		template_path = os.path.join(os.environ['TEMPLATE_PATH'], slugify(validated_data['algorithm_name']))
 		generic_template_path=os.path.join(os.environ['TEMPLATE_PATH'], "generic-template")
 
-		if(execution.version.exists() and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(template_path)):
+		if execution.version is not None and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(template_path):
 			file_loader = FileSystemLoader(template_path)
 			env = Environment(loader=file_loader)
 			algorithm_template_path = '{}_{}'.format(slugify(validated_data['algorithm_name']), validated_data['version_id'])

@@ -9,9 +9,9 @@ from urllib.request import urlopen
 from jinja2 import Environment, FileSystemLoader
 import zipfile
 from airflow.bin import cli
-import argparse
+import argparse, glob
 import shutil
-
+from slugify import slugify
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
@@ -167,7 +167,7 @@ class ExecutionSerializer(serializers.Serializer):
 
 		# TODO: Importar Jinja 2
 		# TODO: Crear el diccionario
-		execution = Execution.objects.filter(pk=validated_data['execution_id'])
+		execution = Execution.objects.get(pk=validated_data['execution_id'])
 		min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
 		params = dict(self.get_kwargs(validated_data['parameters']))
 		params['lat'] = (min_lat, max_lat)
@@ -179,26 +179,26 @@ class ExecutionSerializer(serializers.Serializer):
 		#params['owner'] = Execution.executed_by.
 		params['owner'] = "API-REST"
 		# TODO: Cargar el template
-		template_path = os.path.join(os.environ['TEMPLATE_PATH'], validated_data['algorithm_name'])
+		template_path = os.path.join(os.environ['TEMPLATE_PATH'], slugify(validated_data['algorithm_name']))
 		generic_template_path=os.path.join(os.environ['TEMPLATE_PATH'], "generic-template")
 
 		if(execution.version.exists() and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(template_path)):
 			file_loader = FileSystemLoader(template_path)
 			env = Environment(loader=file_loader)
-			algorithm_template_path = '{}_{}'.format(validated_data['algorithm_name'], validated_data['version_id'])
+			algorithm_template_path = '{}_{}'.format(slugify(validated_data['algorithm_name']), validated_data['version_id'])
 			template = env.get_template(algorithm_template_path)
 		else:
 			file_loader = FileSystemLoader(generic_template_path)
 			env = Environment(loader=file_loader)
 			algorithm_template_path = '{}_{}'.format("generic-template", "1.0")
-			params['algorithm_name'] = validated_data['algorithm_name']
+			params['algorithm_name'] = slugify(validated_data['algorithm_name'])
 			params['version_id'] = validated_data['version_id']
 			template = env.get_template(algorithm_template_path)
 
 		# TODO: Renderizar el template
 		airflow_dag_path = os.environ['AIRFLOW_DAG_PATH']
 		execution_dag_path = '{}/execution_{}_{}_{}.py'.format(airflow_dag_path, str(validated_data['execution_id']),
-															   validated_data['algorithm_name'],
+                                                               slugify(validated_data['algorithm_name']),
 															   validated_data['version_id'])
 		output = template.render(params=params)
 		with open(execution_dag_path, 'w') as dag:
@@ -297,12 +297,12 @@ class AlgorithmSerializer(serializers.Serializer):
             file_to_extract.extractall(extraction_path)
 
         # TODO: Poner el template en la carpeta templates
-        template_path = os.path.join(os.environ['TEMPLATE_PATH'], version.algorithm.name)
+        template_path = os.path.join(os.environ['TEMPLATE_PATH'], slugify(version.algorithm.name))
 
         if not os.path.isdir(template_path):
             os.makedirs(template_path)
 
-        with open(os.path.join(template_path,"{}_{}".format(version.algorithm.name, version.number)), 'wb') as tfile:
+        with open(os.path.join(template_path,"{}_{}.py".format(slugify(version.algorithm.name), version.number)), 'wb') as tfile:
             tfile.write(validated_data["template_file"].read())
         tfile.close()
         # TODO: Poner los algoritmos en la caprta de algoritmos
@@ -311,6 +311,11 @@ class AlgorithmSerializer(serializers.Serializer):
                 algorithm_path = os.path.join(os.environ['WORKFLOW_ALGORITHMS_PATH'],file)
                 if not os.path.isdir(algorithm_path):
                     os.makedirs(template_path)
+
+
+                python_files = glob.glob(os.path.join(extraction_path, file,"*.py"))
+                if not python_files:
+                    raise serializers.ValidationError('No hay algoritmos en esta carpeta: {}'.format(os.path.join(extraction_path, file,"*.py")))
                 for alg_file in os.listdir(os.path.join(extraction_path, file)):
                     if alg_file.endswith(".py"):
                         # TODO: Revisar que no hayan algoritmos con el mismo nombre

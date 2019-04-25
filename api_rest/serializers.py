@@ -325,8 +325,8 @@ class AlgorithmSerializer(serializers.Serializer):
                             raise serializers.ValidationError('El algoritmo {} ya existe en la carpeta {}'.format(file,os.path.join(algorithm_path, alg_file)))
                         else:
                             with open(os.path.join(algorithm_path, alg_file),'wb') as afile:
-                                f = open(os.path.join(extraction_path, file, alg_file), "r")
-                                afile.write(f)
+                                f = open(os.path.join(extraction_path, file, alg_file), "rb")
+                                afile.write(f.read())
                             f.close()
                             afile.close()
             else:

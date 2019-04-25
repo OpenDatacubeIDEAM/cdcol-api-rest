@@ -290,7 +290,7 @@ class AlgorithmSerializer(serializers.Serializer):
     template_file = serializers.FileField()
 
     def create(self, validated_data):
-        extraction_path = os.path.join(os.environ['DOWNLOAD_PATH'], validated_data["algorithm_id"])
+        extraction_path = os.path.join(os.environ['DOWNLOAD_PATH'], validated_data["version_id"])
         version = Version.objects.filter(id=validated_data["version_id"])
         with zipfile.ZipFile(validated_data["algorithms_zip_file"], "r") as file_to_extract:
             file_to_extract.extractall(extraction_path)

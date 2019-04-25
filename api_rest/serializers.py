@@ -291,7 +291,7 @@ class AlgorithmSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         extraction_path = os.path.join(os.environ['DOWNLOAD_PATH'], str(validated_data["version_id"]))
-        version = Version.objects.filter(id=validated_data["version_id"])
+        version = Version.objects.filter(pk=validated_data["version_id"])
 
         with zipfile.ZipFile(validated_data["algorithms_zip_file"], "r") as file_to_extract:
             file_to_extract.extractall(extraction_path)
@@ -299,7 +299,7 @@ class AlgorithmSerializer(serializers.Serializer):
         # TODO: Poner el template en la carpeta templates
         if not version.exists():
             raise serializers.ValidationError('No existe una version con el id {} '.format(validated_data["version_id"]))
-        if version.algorithm is None:
+        if version.number is not None:
             raise serializers.ValidationError(
                 'El numero de la version es: {}'.format(version.number))
         template_path = os.path.join(os.environ['TEMPLATE_PATH'], version.algorithm.name)

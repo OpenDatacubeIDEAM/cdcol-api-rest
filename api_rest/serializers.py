@@ -126,9 +126,9 @@ class ExecutionSerializer(serializers.Serializer):
     def get_product(self, param_dict):
         for keys in param_dict.keys():
             if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
-                return param_dict[keys]['storage_unit_name'], param_dict[keys]['bands'].split(',')
+                return [param_dict[keys]['storage_unit_name']], param_dict[keys]['bands'].split(',')
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
-                return param_dict[keys]['storage_unit_name'], []
+                return [param_dict[keys]['storage_unit_name']], []
 
     def get_area(self, param_dict):
         for keys in param_dict.keys():
@@ -173,7 +173,7 @@ class ExecutionSerializer(serializers.Serializer):
         params = dict(self.get_kwargs(validated_data['parameters']))
         params['lat'] = (min_lat, max_lat)
         params['lon'] = (min_long, max_long)
-        params['product'], params['bands'] = self.get_product(validated_data['parameters'])
+        params['products'], params['bands'] = self.get_product(validated_data['parameters'])
         params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
         params['execID'] = 'execution_{}_{}_{}'.format(str(validated_data['execution_id']),
                                                        validated_data['algorithm_name'], validated_data['version_id'])
@@ -184,20 +184,19 @@ class ExecutionSerializer(serializers.Serializer):
         template_path = os.path.join(os.environ['TEMPLATE_PATH'], slugify(validated_data['algorithm_name']))
         generic_template_path = os.path.join(os.environ['TEMPLATE_PATH'], "generic-template")
 
-        if execution.version is not None and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(
-                template_path):
+        if execution.version is not None and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(template_path):
             file_loader = FileSystemLoader(template_path)
             env = Environment(loader=file_loader)
             algorithm_template_path = '{}_{}.py'.format(slugify(validated_data['algorithm_name']),
                                                         validated_data['version_id'])
             template = env.get_template(algorithm_template_path)
-        # else:
-        # 	file_loader = FileSystemLoader(generic_template_path)
-        # 	env = Environment(loader=file_loader)
-        # 	algorithm_template_path = '{}_{}'.format("generic-template", "1.0")
-        # 	params['algorithm_name'] = slugify(validated_data['algorithm_name'])
-        # 	params['version_id'] = validated_data['version_id']
-        # 	template = env.get_template(algorithm_template_path)
+        else:
+            file_loader = FileSystemLoader(generic_template_path)
+            env = Environment(loader=file_loader)
+            algorithm_template_path = '{}_{}'.format("generic-template", "1.0")
+            params['algorithm_name'] = slugify(validated_data['algorithm_name'])
+            params['version_id'] = validated_data['version_id']
+            template = env.get_template(algorithm_template_path)
 
         # TODO: Renderizar el template
         airflow_dag_path = os.environ['AIRFLOW_DAG_PATH']

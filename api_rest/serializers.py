@@ -328,5 +328,5 @@ class AlgorithmSerializer(serializers.Serializer):
                                 f.close()
                             afile.close()
 
-        shutil.rmtree(extraction_path)
+        #shutil.rmtree(extraction_path)
         return validated_data

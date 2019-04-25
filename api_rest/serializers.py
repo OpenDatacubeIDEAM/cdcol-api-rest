@@ -206,14 +206,14 @@ class ExecutionSerializer(serializers.Serializer):
 		output = template.render(params=params)
 		with open(execution_dag_path, 'w') as dag:
 			dag.write(output)
-			execution.dag_id = params['execID']
-			execution.save()
-			args=argparse.Namespace()
-			args.dag_id = params['execID']
-			args.run_id = None
-			args.exec_id = None
-			args.con = None
-			cli.trigger_dag(args)
+        execution.dag_id = params['execID']
+        execution.save()
+        args = argparse.Namespace()
+        args.dag_id = params['execID']
+        args.run_id = None
+        args.exec_id = None
+        args.conf = None
+        cli.trigger_dag(args)
 		# TODO: Ejecutar workflow
 
 		bash_command1 = 'airflow list_dags'

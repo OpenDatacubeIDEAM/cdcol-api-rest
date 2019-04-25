@@ -326,7 +326,7 @@ class AlgorithmSerializer(serializers.Serializer):
                         else:
                             with open(os.path.join(algorithm_path, alg_file),'wb') as afile:
                                 f = open(os.path.join(extraction_path, file, alg_file), "r")
-                                afile.write(f.read())
+                                afile.write(f)
                             f.close()
                             afile.close()
             else:

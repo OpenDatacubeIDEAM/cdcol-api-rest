@@ -186,7 +186,7 @@ class ExecutionSerializer(serializers.Serializer):
 		if execution.version is not None and execution.version.publishing_state == Version.PUBLISHED_STATE and os.path.exists(template_path):
 			file_loader = FileSystemLoader(template_path)
 			env = Environment(loader=file_loader)
-			algorithm_template_path = '{}_{}'.format(slugify(validated_data['algorithm_name']), validated_data['version_id'])
+			algorithm_template_path = '{}_{}.py'.format(slugify(validated_data['algorithm_name']), validated_data['version_id'])
 			template = env.get_template(os.path.join(template_path,algorithm_template_path))
 		else:
 			file_loader = FileSystemLoader(generic_template_path)

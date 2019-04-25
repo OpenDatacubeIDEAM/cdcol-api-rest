@@ -107,6 +107,7 @@ class Version(models.Model):
 	    5. OBSOLETA
 	    """
 
+
 	DEVELOPED_STATE = '1'
 	PUBLISHED_STATE = '2'
 	DEPRECATED_STATE = '3'

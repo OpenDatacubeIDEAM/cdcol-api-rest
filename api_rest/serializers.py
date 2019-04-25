@@ -299,6 +299,9 @@ class AlgorithmSerializer(serializers.Serializer):
         # TODO: Poner el template en la carpeta templates
         if not version.exists():
             raise serializers.ValidationError('No existe una version con el id {} '.format(validated_data["version_id"]))
+        if version.algorithm is None:
+            raise serializers.ValidationError(
+                'El numero de la version es: {}'.format(version.number))
         template_path = os.path.join(os.environ['TEMPLATE_PATH'], version.algorithm.name)
 
         if not os.path.isdir(template_path):

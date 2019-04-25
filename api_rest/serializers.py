@@ -91,7 +91,7 @@ class StorageUnitSerializer(serializers.Serializer):
 
 		try:
 			subprocess.check_output(
-				['/root/anaconda/bin/datacube', 'product', 'add', description_file_path]
+				['/home/cubo/anaconda/bin/datacube', 'product', 'add', description_file_path]
 			)
 		except CalledProcessError as cpe:
 			print("Error creating the storage unit; " + str(cpe))

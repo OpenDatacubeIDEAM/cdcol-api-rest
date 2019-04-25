@@ -221,9 +221,9 @@ class ExecutionSerializer(serializers.Serializer):
         cli.trigger_dag(args)
         # TODO: Ejecutar workflow
 
-        bash_command1 = 'airflow list_dags'
-        bash_command2 = 'airflow unpause' + params['execID']
-        bash_command3 = 'airflow trigger_dag ' + params['execID']
+        bash_command1 = '/home/cubo/anaconda/bin/airflow list_dags'
+        bash_command2 = '/home/cubo/anaconda/bin/airflow unpause' + params['execID']
+        bash_command3 = '/home/cubo/anaconda/bin/airflow trigger_dag ' + params['execID']
 
         subprocess.call(bash_command1.split())
         subprocess.call(bash_command2.split())

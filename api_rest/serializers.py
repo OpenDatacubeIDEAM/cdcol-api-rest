@@ -311,7 +311,7 @@ class AlgorithmSerializer(serializers.Serializer):
             if os.path.isdir(os.path.join(extraction_path,file)):
                 algorithm_path = os.path.join(os.environ['WORKFLOW_ALGORITHMS_PATH'],file)
                 if not os.path.isdir(algorithm_path):
-                    os.makedirs(template_path)
+                    os.makedirs(algorithm_path)
 
 
 

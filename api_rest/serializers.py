@@ -177,6 +177,7 @@ class ExecutionSerializer(serializers.Serializer):
         params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
         params['execID'] = 'execution_{}_{}_{}'.format(str(validated_data['execution_id']),
                                                        validated_data['algorithm_name'], validated_data['version_id'])
+        params['elimina_resultados_anteriores'] = True
         # params['owner'] = Execution.executed_by.
         params['owner'] = "API-REST"
         # TODO: Cargar el template

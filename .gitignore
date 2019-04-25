@@ -5,3 +5,4 @@ api_rest/migrations
 .idea/
 .env/
 __pycache__/
+venv

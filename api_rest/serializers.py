@@ -305,12 +305,14 @@ class AlgorithmSerializer(serializers.Serializer):
         with open(os.path.join(template_path,"{}_{}.py".format(slugify(version.algorithm.name), version.number)), 'wb') as tfile:
             tfile.write(validated_data["template_file"].read())
         tfile.close()
+
         # TODO: Poner los algoritmos en la caprta de algoritmos
         for file in os.listdir(extraction_path):
-            if os.path.isdir(file):
+            if os.path.isdir(os.path.join(extraction_path,file)):
                 algorithm_path = os.path.join(os.environ['WORKFLOW_ALGORITHMS_PATH'],file)
                 if not os.path.isdir(algorithm_path):
                     os.makedirs(template_path)
+
 
 
                 python_files = glob.glob(os.path.join(extraction_path, file,"*.py"))
@@ -327,6 +329,8 @@ class AlgorithmSerializer(serializers.Serializer):
                                 afile.write(f.read())
                                 f.close()
                             afile.close()
+            else:
+                raise serializers.ValidationError('Cada algoritmo debería ir en su carpeta')
 
         #shutil.rmtree(extraction_path)
         return validated_data

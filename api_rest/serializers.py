@@ -325,12 +325,12 @@ class AlgorithmSerializer(serializers.Serializer):
                             raise serializers.ValidationError('El algoritmo {} ya existe en la carpeta {}'.format(file,os.path.join(algorithm_path, alg_file)))
                         else:
                             with open(os.path.join(algorithm_path, alg_file),'wb') as afile:
-                                f = open(os.path.join(extraction_path, file), "r")
+                                f = open(os.path.join(extraction_path, file, alg_file), "r")
                                 afile.write(f.read())
-                                f.close()
+                            f.close()
                             afile.close()
             else:
                 raise serializers.ValidationError('Cada algoritmo debería ir en su carpeta')
 
-        #shutil.rmtree(extraction_path)
+        shutil.rmtree(extraction_path)
         return validated_data

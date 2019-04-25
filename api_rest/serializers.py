@@ -133,8 +133,8 @@ class ExecutionSerializer(serializers.Serializer):
     def get_area(self, param_dict):
         for keys in param_dict.keys():
             if param_dict[keys]['type'] == self.PARAM_TYPES['AREA_TYPE']:
-                return param_dict[keys]['longitude_start'], param_dict[keys]['longitude_end'], param_dict[keys][
-                    'latitude_start'], param_dict[keys]['latitude_end']
+                return int(param_dict[keys]['longitude_start']), int(param_dict[keys]['longitude_end']), int(param_dict[keys][
+                    'latitude_start']), int(param_dict[keys]['latitude_end'])
 
     def get_time_periods(self, param_dict):
         time_periods = []

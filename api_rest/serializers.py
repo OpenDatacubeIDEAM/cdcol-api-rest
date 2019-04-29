@@ -212,22 +212,25 @@ class ExecutionSerializer(serializers.Serializer):
         execution.dag_id = params['execID']
         execution.save()
 
+        # TODO: Ejecutar workflow
+        bash_command1 = '/home/cubo/anaconda/bin/airflow list_dags'
+        bash_command2 = '/home/cubo/anaconda/bin/airflow unpause' + params['execID']
+
+        subprocess.call(bash_command1.split())
+        subprocess.call(bash_command2.split())
+
         args = argparse.Namespace()
         args.dag_id = params['execID']
         args.run_id = None
         args.exec_id = None
         args.conf = None
         args.exec_date = None
+        args.subdir = None
+        cli.set_is_paused(False, args=args)
         cli.trigger_dag(args)
-        # TODO: Ejecutar workflow
 
-        bash_command1 = '/home/cubo/anaconda/bin/airflow list_dags'
-        bash_command2 = '/home/cubo/anaconda/bin/airflow unpause' + params['execID']
-        bash_command3 = '/home/cubo/anaconda/bin/airflow trigger_dag ' + params['execID']
 
-        subprocess.call(bash_command1.split())
-        subprocess.call(bash_command2.split())
-        subprocess.call(bash_command3.split())
+
 
         # TODO: Modificar la ejecución en la base de datos
 

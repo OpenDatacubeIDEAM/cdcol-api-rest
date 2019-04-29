@@ -231,7 +231,7 @@ class ExecutionSerializer(serializers.Serializer):
         args.conf = None
         args.exec_date = None
         args.subdir = None
-        cli.set_is_paused(False, args=args)
+        #cli.set_is_paused(False, args=args)
         cli.trigger_dag(args)
 
 

@@ -222,7 +222,7 @@ class ExecutionSerializer(serializers.Serializer):
 
         dagbag = models.DagBag(settings.DAGS_FOLDER)
         dagbag.collect_dags()
-        dagbag.process_file(self, filepath=execution_dag_path)
+        dagbag.process_file(filepath=execution_dag_path)
 
         args = argparse.Namespace()
         args.dag_id = params['execID']

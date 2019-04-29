@@ -9,6 +9,7 @@ from urllib.request import urlopen
 from jinja2 import Environment, FileSystemLoader
 import zipfile
 from airflow.bin import cli
+from airflow import models,settings
 import argparse, glob
 import shutil
 from slugify import slugify
@@ -218,6 +219,10 @@ class ExecutionSerializer(serializers.Serializer):
 
         subprocess.call(bash_command1.split())
         subprocess.call(bash_command2.split())
+
+        dagbag = models.DagBag(settings.DAGS_FOLDER)
+        dagbag.collect_dags()
+        dagbag.process_file(self, filepath=execution_dag_path)
 
         args = argparse.Namespace()
         args.dag_id = params['execID']

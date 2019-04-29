@@ -13,3 +13,4 @@ psycopg2>=2.6.2
 requests==2.11.1
 simplejson==3.8.2
 uritemplate==3.0.0
+airflow==1.10.12

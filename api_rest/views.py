@@ -13,7 +13,6 @@ from subprocess import CalledProcessError
 from airflow import models,settings
 from airflow.api.common.experimental import mark_tasks
 from airflow.models import DagRun
-from celery.task.control import revoke
 import shutil
 import datetime
 

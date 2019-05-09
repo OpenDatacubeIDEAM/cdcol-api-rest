@@ -208,6 +208,8 @@ class ExecutionSerializer(serializers.Serializer):
                                                                validated_data['version_id'])
         output = template.render(params=params)
         with open(execution_dag_path, 'w') as dag:
+            dag.write("from airflow.operators import CompressFileSensor\n")
+            dag.write("from cdcol_utils import other_utils\n")
             dag.write(output)
             dag.write("\nsensor_fin_ejecucion = CompressFileSensor(task_id='sensor_fin_ejecucion',poke_interval=90, soft_fail=True,mode='reschedule', dag=dag) \n")
             dag.write("comprimir_resultados = PythonOperator(task_id='comprimir_resultados',provide_context=True,python_callable=other_utils.compress_results,queue='airflow_small',op_kwargs={'execID': args['execID']},dag=dag) \n")

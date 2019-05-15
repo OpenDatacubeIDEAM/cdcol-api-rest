@@ -196,7 +196,7 @@ class ExecutionSerializer(serializers.Serializer):
         else:
             file_loader = FileSystemLoader(generic_template_path)
             env = Environment(loader=file_loader)
-            algorithm_template_path = '{}_{}'.format("generic-template", "1.0")
+            algorithm_template_path = '{}_{}.py'.format("generic-template", "1.0")
             params['algorithm_name'] = slugify(validated_data['algorithm_name'])
             params['algorithm_version'] = validated_data['version_id']
             template = env.get_template(algorithm_template_path)

@@ -144,6 +144,9 @@ class NewExecutionView(APIView):
 
 class CancelExecutionView(APIView):
 	def post(self, request):
+		print(request)
+		print(request.data)
+		print(request.data['execution_id'])
 		execution_id=request.data['execution_id']
 		execution = Execution.objects.filter(pk=execution_id)
 		if execution.exists():

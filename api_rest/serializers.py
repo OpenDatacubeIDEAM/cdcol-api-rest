@@ -176,8 +176,7 @@ class ExecutionSerializer(serializers.Serializer):
         params['lon'] = (min_long, max_long)
         params['products'], params['bands'] = self.get_product(validated_data['parameters'])
         params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
-        params['execID'] = 'execution_{}_{}_{}'.format(str(validated_data['execution_id']),
-                                                       validated_data['algorithm_name'], validated_data['version_id'])
+        params['execID'] = 'exec_{}'.format(str(validated_data['execution_id']))
         params['elimina_resultados_anteriores'] = True
         params['genera_mosaico'] = True
         # params['owner'] = Execution.executed_by.
@@ -203,9 +202,7 @@ class ExecutionSerializer(serializers.Serializer):
 
         # TODO: Renderizar el template
         airflow_dag_path = os.environ['AIRFLOW_DAG_PATH']
-        execution_dag_path = '{}/execution_{}_{}_{}.py'.format(airflow_dag_path, str(validated_data['execution_id']),
-                                                               slugify(validated_data['algorithm_name']),
-                                                               validated_data['version_id'])
+        execution_dag_path = '{}/exec_{}.py'.format(airflow_dag_path, str(validated_data['execution_id']))
         output = template.render(params=params)
         with open(execution_dag_path, 'w') as dag:
             dag.write("from airflow.operators import CompressFileSensor\n")

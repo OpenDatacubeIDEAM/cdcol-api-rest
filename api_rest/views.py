@@ -144,11 +144,8 @@ class NewExecutionView(APIView):
 
 class CancelExecutionView(APIView):
 	def post(self, request):
-		print(request)
-		print(request.data)
-		print(request.data['execution_id'])
 		execution_id=request.data['execution_id']
-		execution = Execution.objects.filter(pk=execution_id)
+		execution = Execution.objects.get(pk=execution_id)
 		if execution.exists():
 			dagbag = models.DagBag(settings.DAGS_FOLDER)
 			dag = dagbag.get_dag(execution.dag_id)

@@ -115,7 +115,8 @@ class ExecutionSerializer(serializers.Serializer):
         'STORAGE_UNIT_TYPE': '8',
         'TIME_PERIOD_TYPE': '9',
         'FILE_TYPE': '12',
-        'STORAGE_UNIT_SIMPLE_TYPE': '13'
+        'STORAGE_UNIT_SIMPLE_TYPE': '13',
+        'STORAGE_UNIT_MULTIPLE_TYPE':'14'
     }
 
     execution_id = serializers.IntegerField()
@@ -130,6 +131,14 @@ class ExecutionSerializer(serializers.Serializer):
                 return [param_dict[keys]['storage_unit_name']], param_dict[keys]['bands'].split(',')
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
                 return [param_dict[keys]['storage_unit_name']], []
+            elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_MULTIPLE_TYPE']:
+                storages = param_dict[keys]['storages']
+                bands=[]
+                for storage in param_dict[keys]['storages']:
+                    storages.append(storage['name'])
+                    bands.append(storage['bands'])
+                return storages, bands
+
 
     def get_area(self, param_dict):
         for keys in param_dict.keys():

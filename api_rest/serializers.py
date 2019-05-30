@@ -132,9 +132,10 @@ class ExecutionSerializer(serializers.Serializer):
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
                 return [param_dict[keys]['storage_unit_name']], []
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_MULTIPLE_TYPE']:
-                storages = param_dict[keys]['storages']
+                storages = []
                 bands=[]
                 for storage in param_dict[keys]['storages']:
+                    print(storage)
                     storages.append(storage['name'])
                     bands.append(storage['bands'])
                 return storages, bands

@@ -128,17 +128,12 @@ class ExecutionSerializer(serializers.Serializer):
     def get_product(self, param_dict):
         for keys in param_dict.keys():
             if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
-                return [param_dict[keys]['storage_unit_name']], param_dict[keys]['bands'].split(',')
+                return [{'name':param_dict[keys]['storage_unit_name'], 'bands':param_dict[keys]['bands'].split(',')}],
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
-                return [param_dict[keys]['storage_unit_name']], []
+                return [{'name': param_dict[keys]['storage_unit_name'], 'bands': []}],
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_MULTIPLE_TYPE']:
-                storages = []
-                bands=[]
-                for storage in param_dict[keys]['storages']:
-                    print(storage)
-                    storages.append(storage['name'])
-                    bands.append(storage['bands'])
-                return storages, bands
+                return param_dict[keys]['storages']
+
 
 
     def get_area(self, param_dict):
@@ -184,7 +179,7 @@ class ExecutionSerializer(serializers.Serializer):
         params = dict(self.get_kwargs(validated_data['parameters']))
         params['lat'] = (min_lat, max_lat)
         params['lon'] = (min_long, max_long)
-        params['products'], params['bands'] = self.get_product(validated_data['parameters'])
+        params['products'] = self.get_product(validated_data['parameters'])
         params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
         params['execID'] = 'exec_{}'.format(str(validated_data['execution_id']))
         params['elimina_resultados_anteriores'] = True

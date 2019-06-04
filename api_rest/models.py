@@ -48,6 +48,13 @@ class StorageUnit(models.Model):
 		else:
 			print('Updated at: ' + str(self.updated_at))
 
+	def get_bands(self):
+		bands = list()
+		metadata = JSONRenderer().render(self.metadata)
+		print(metadata)
+		for meta in metadata['measurements']:
+			bands.append(meta['name'])
+
 	class Meta:
 		db_table = 'storage_storageunit'
 

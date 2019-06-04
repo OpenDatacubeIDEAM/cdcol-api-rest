@@ -174,12 +174,14 @@ class ExecutionSerializer(serializers.Serializer):
         # TODO: Importar Jinja 2
         # TODO: Crear el diccionario
         execution = Execution.objects.get(pk=validated_data['execution_id'])
-
+        print("VALIDATED DATA")
+        print(validated_data)
         min_long, max_long, min_lat, max_lat = self.get_area(validated_data['parameters'])
         params = dict(self.get_kwargs(validated_data['parameters']))
         params['lat'] = (min_lat, max_lat)
         params['lon'] = (min_long, max_long)
         params['products'] = self.get_product(validated_data['parameters'])
+        print(params['products'])
         params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
         params['execID'] = 'exec_{}'.format(str(validated_data['execution_id']))
         params['elimina_resultados_anteriores'] = True

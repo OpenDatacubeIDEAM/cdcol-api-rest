@@ -115,7 +115,8 @@ class ExecutionSerializer(serializers.Serializer):
         'STORAGE_UNIT_TYPE': '8',
         'TIME_PERIOD_TYPE': '9',
         'FILE_TYPE': '12',
-        'STORAGE_UNIT_SIMPLE_TYPE': '13'
+        'STORAGE_UNIT_SIMPLE_TYPE': '13',
+        'STORAGE_UNIT_MULTIPLE_TYPE':'14'
     }
 
     execution_id = serializers.IntegerField()
@@ -127,9 +128,13 @@ class ExecutionSerializer(serializers.Serializer):
     def get_product(self, param_dict):
         for keys in param_dict.keys():
             if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
-                return [param_dict[keys]['storage_unit_name']], param_dict[keys]['bands'].split(',')
+                return [{'name':param_dict[keys]['storage_unit_name'], 'bands':param_dict[keys]['bands'].split(',')}],
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
-                return [param_dict[keys]['storage_unit_name']], []
+                return [{'name': param_dict[keys]['storage_unit_name'], 'bands': []}],
+            elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_MULTIPLE_TYPE']:
+                return param_dict[keys]['storages']
+
+
 
     def get_area(self, param_dict):
         for keys in param_dict.keys():
@@ -174,7 +179,7 @@ class ExecutionSerializer(serializers.Serializer):
         params = dict(self.get_kwargs(validated_data['parameters']))
         params['lat'] = (min_lat, max_lat)
         params['lon'] = (min_long, max_long)
-        params['products'], params['bands'] = self.get_product(validated_data['parameters'])
+        params['products'] = self.get_product(validated_data['parameters'])
         params['time_ranges'] = self.get_time_periods(validated_data['parameters'])
         params['execID'] = 'exec_{}'.format(str(validated_data['execution_id']))
         params['elimina_resultados_anteriores'] = True
@@ -208,8 +213,8 @@ class ExecutionSerializer(serializers.Serializer):
             dag.write("from airflow.operators import CompressFileSensor\n")
             dag.write("from cdcol_utils import other_utils\n")
             dag.write(output)
-            dag.write("\nsensor_fin_ejecucion = CompressFileSensor(task_id='sensor_fin_ejecucion',poke_interval=90, soft_fail=True,mode='reschedule', dag=dag) \n")
-            dag.write("comprimir_resultados = PythonOperator(task_id='comprimir_resultados',provide_context=True,python_callable=other_utils.compress_results,queue='airflow_small',op_kwargs={'execID': args['execID']},dag=dag) \n")
+            dag.write("\nsensor_fin_ejecucion = CompressFileSensor(task_id='sensor_fin_ejecucion',poke_interval=90, soft_fail=True,mode='reschedule', queue='utils', dag=dag) \n")
+            dag.write("comprimir_resultados = PythonOperator(task_id='comprimir_resultados',provide_context=True,python_callable=other_utils.compress_results,queue='utils',op_kwargs={'execID': args['execID']},dag=dag) \n")
             dag.write("sensor_fin_ejecucion >> comprimir_resultados \n")
         dag.close()
         execution.dag_id = params['execID']

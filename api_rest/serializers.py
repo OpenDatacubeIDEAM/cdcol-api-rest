@@ -128,9 +128,9 @@ class ExecutionSerializer(serializers.Serializer):
     def get_product(self, param_dict):
         for keys in param_dict.keys():
             if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
-                return [{'name':param_dict[keys]['storage_unit_name'], 'bands':param_dict[keys]['bands'].split(',')}],
+                return [{'name':param_dict[keys]['storage_unit_name'], 'bands':param_dict[keys]['bands'].split(',')}]
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
-                return [{'name': param_dict[keys]['storage_unit_name'], 'bands': []}],
+                return [{'name': param_dict[keys]['storage_unit_name'], 'bands': []}]
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_MULTIPLE_TYPE']:
                 return param_dict[keys]['storages']
 

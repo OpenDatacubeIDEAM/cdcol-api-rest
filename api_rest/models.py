@@ -54,6 +54,7 @@ class StorageUnit(models.Model):
 		print(metadata)
 		for meta in metadata['measurements']:
 			bands.append(meta['name'])
+		return bands
 
 	class Meta:
 		db_table = 'storage_storageunit'

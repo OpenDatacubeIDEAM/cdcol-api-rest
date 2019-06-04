@@ -50,7 +50,7 @@ class StorageUnit(models.Model):
 
 	def get_bands(self):
 		bands = list()
-		metadata = JSONRenderer().render(self.metadata)
+		metadata = self.metadata
 		print(metadata)
 		for meta in metadata['measurements']:
 			bands.append(meta['name'])

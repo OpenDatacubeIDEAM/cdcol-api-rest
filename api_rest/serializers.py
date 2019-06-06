@@ -131,8 +131,11 @@ class ExecutionSerializer(serializers.Serializer):
             if param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_TYPE']:
                 return [{'name':param_dict[keys]['storage_unit_name'], 'bands':param_dict[keys]['bands'].split(',')}]
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_SIMPLE_TYPE']:
-                storage_unit = StorageUnit.objects.get(name=param_dict[keys]['storage_unit_name'])
-                bands = storage_unit.get_bands()
+                if param_dict[keys]['bands'] != None:
+                    bands = param_dict[keys]['bands'].split(',')
+                else:
+                    storage_unit = StorageUnit.objects.get(name=param_dict[keys]['storage_unit_name'])
+                    bands = storage_unit.get_bands()
                 return [{'name': param_dict[keys]['storage_unit_name'], 'bands': bands}]
             elif param_dict[keys]['type'] == self.PARAM_TYPES['STORAGE_UNIT_MULTIPLE_TYPE']:
                 return param_dict[keys]['storages']

@@ -185,7 +185,7 @@ class ExecutionSerializer(serializers.Serializer):
         params['execID'] = 'exec_{}'.format(str(validated_data['execution_id']))
         params['elimina_resultados_anteriores'] = True
         params['genera_mosaico'] = True
-        print(validated_data['parameters'])
+        print(validated_data)
         # params['owner'] = Execution.executed_by.
         params['owner'] = "API-REST"
         # TODO: Cargar el template

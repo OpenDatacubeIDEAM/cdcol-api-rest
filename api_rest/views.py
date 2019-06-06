@@ -154,6 +154,8 @@ class CancelExecutionView(APIView):
 			dr = dr_list[-1]
 			try:
 				mark_tasks.set_dag_run_state_to_failed(dag=dag, execution_date=dr.execution_date, commit=True)
+				execution.state = Execution.CANCELED_STATE
+				execution.save()
 				return response.Response(data=execution_id, status=status.HTTP_200_OK)
 			except:
 				return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)

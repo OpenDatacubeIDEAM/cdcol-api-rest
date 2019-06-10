@@ -137,6 +137,7 @@ class NewExecutionView(APIView):
 	def post(self, request):
 
 		serializer = ExecutionSerializer(data=request.data)
+		print(request.data)
 		if serializer.is_valid():
 			serializer.save()
 			return response.Response(serializer.data, status=status.HTTP_201_CREATED)

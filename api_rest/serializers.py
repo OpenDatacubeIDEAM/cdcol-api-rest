@@ -219,7 +219,7 @@ class ExecutionSerializer(serializers.Serializer):
             dag.write("from airflow.operators import CompressFileSensor\n")
             dag.write("from cdcol_utils import other_utils\n")
             dag.write(output)
-            dag.write("\nsensor_fin_ejecucion = CompressFileSensor(task_id='sensor_fin_ejecucion',poke_interval=90, soft_fail=True,mode='reschedule', queue='util', dag=dag) \n")
+            dag.write("\nsensor_fin_ejecucion = CompressFileSensor(task_id='sensor_fin_ejecucion',poke_interval=60, soft_fail=True,mode='reschedule', queue='util', dag=dag) \n")
             dag.write("comprimir_resultados = PythonOperator(task_id='comprimir_resultados',provide_context=True,python_callable=other_utils.compress_results,queue='util',op_kwargs={'execID': args['execID']},dag=dag) \n")
             dag.write("sensor_fin_ejecucion >> comprimir_resultados \n")
         dag.close()

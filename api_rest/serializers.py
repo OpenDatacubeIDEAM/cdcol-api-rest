@@ -315,16 +315,13 @@ class ExecutionSerializer(serializers.Serializer):
 
 
 class AlgorithmSerializer(serializers.Serializer):
-    version_id = serializers.IntegerField(required=False)
-    algorithms_zip_file = serializers.FileField()
+    version_id = serializers.IntegerField()
+    algorithms_zip_file = serializers.FileField(required=False)
     template_file = serializers.FileField()
 
     def create(self, validated_data):
         extraction_path = os.path.join(os.environ['DOWNLOAD_PATH'], str(validated_data["version_id"]))
         version = Version.objects.get(pk=validated_data["version_id"])
-
-        with zipfile.ZipFile(validated_data["algorithms_zip_file"], "r") as file_to_extract:
-            file_to_extract.extractall(extraction_path)
 
         # TODO: Poner el template en la carpeta templates
         template_path = os.path.join(os.environ['TEMPLATE_PATH'], slugify(version.algorithm.name))
@@ -337,33 +334,37 @@ class AlgorithmSerializer(serializers.Serializer):
             tfile.write(validated_data["template_file"].read())
         tfile.close()
 
-        # TODO: Poner los algoritmos en la caprta de algoritmos
-        for file in os.listdir(extraction_path):
-            if os.path.isdir(os.path.join(extraction_path, file)):
-                algorithm_path = os.path.join(os.environ['WORKFLOW_ALGORITHMS_PATH'], file)
-                if not os.path.isdir(algorithm_path):
-                    os.makedirs(algorithm_path)
+        if validated_data["algorithms_zip_file"] is not None:
+            with zipfile.ZipFile(validated_data["algorithms_zip_file"], "r") as file_to_extract:
+                file_to_extract.extractall(extraction_path)
 
-                python_files = glob.glob(os.path.join(extraction_path, file, "*.py"))
-                if not python_files:
-                    raise serializers.ValidationError(
-                        'No hay algoritmos en esta carpeta: {}'.format(os.path.join(extraction_path, file, "*.py")))
-                for alg_file in os.listdir(os.path.join(extraction_path, file)):
-                    if alg_file.endswith(".py"):
-                        # TODO: Revisar que no hayan algoritmos con el mismo nombre
-                        if os.path.exists(os.path.join(algorithm_path, alg_file)):
-                            raise serializers.ValidationError('El algoritmo {} ya existe en la carpeta {}'.format(file,
-                                                                                                                  os.path.join(
-                                                                                                                      algorithm_path,
-                                                                                                                      alg_file)))
-                        else:
-                            with open(os.path.join(algorithm_path, alg_file), 'wb') as afile:
-                                f = open(os.path.join(extraction_path, file, alg_file), "rb")
-                                afile.write(f.read())
-                            f.close()
-                            afile.close()
-            else:
-                raise serializers.ValidationError('Cada algoritmo debería ir en su carpeta')
+            # TODO: Poner los algoritmos en la caprta de algoritmos
+            for file in os.listdir(extraction_path):
+                if os.path.isdir(os.path.join(extraction_path, file)):
+                    algorithm_path = os.path.join(os.environ['WORKFLOW_ALGORITHMS_PATH'], file)
+                    if not os.path.isdir(algorithm_path):
+                        os.makedirs(algorithm_path)
 
-        shutil.rmtree(extraction_path)
+                    python_files = glob.glob(os.path.join(extraction_path, file, "*.py"))
+                    if not python_files:
+                        raise serializers.ValidationError(
+                            'No hay algoritmos en esta carpeta: {}'.format(os.path.join(extraction_path, file, "*.py")))
+                    for alg_file in os.listdir(os.path.join(extraction_path, file)):
+                        if alg_file.endswith(".py"):
+                            # TODO: Revisar que no hayan algoritmos con el mismo nombre
+                            if os.path.exists(os.path.join(algorithm_path, alg_file)):
+                                raise serializers.ValidationError('El algoritmo {} ya existe en la carpeta {}'.format(file,
+                                                                                                                      os.path.join(
+                                                                                                                          algorithm_path,
+                                                                                                                          alg_file)))
+                            else:
+                                with open(os.path.join(algorithm_path, alg_file), 'wb') as afile:
+                                    f = open(os.path.join(extraction_path, file, alg_file), "rb")
+                                    afile.write(f.read())
+                                f.close()
+                                afile.close()
+                else:
+                    raise serializers.ValidationError('Cada algoritmo debería ir en su carpeta')
+
+            shutil.rmtree(extraction_path)
         return validated_data

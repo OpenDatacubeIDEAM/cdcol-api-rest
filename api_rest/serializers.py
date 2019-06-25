@@ -316,7 +316,7 @@ class ExecutionSerializer(serializers.Serializer):
 
 class AlgorithmSerializer(serializers.Serializer):
     version_id = serializers.IntegerField()
-    algorithms_zip_file = serializers.FileField(required=False)
+    algorithms_zip_file = serializers.FileField(required=False, null=True)
     template_file = serializers.FileField()
 
     def create(self, validated_data):

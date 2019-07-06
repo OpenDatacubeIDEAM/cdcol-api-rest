@@ -316,7 +316,7 @@ class ExecutionSerializer(serializers.Serializer):
 
 class AlgorithmSerializer(serializers.Serializer):
     version_id = serializers.IntegerField()
-    algorithms_zip_file = serializers.FileField(required=False, null=True)
+    algorithms_zip_file = serializers.FileField(required=False)
     template_file = serializers.FileField()
 
     def create(self, validated_data):
@@ -334,7 +334,7 @@ class AlgorithmSerializer(serializers.Serializer):
             tfile.write(validated_data["template_file"].read())
         tfile.close()
 
-        if validated_data["algorithms_zip_file"] is not None:
+        if "algorithms_zip_file" in validated_data:
             with zipfile.ZipFile(validated_data["algorithms_zip_file"], "r") as file_to_extract:
                 file_to_extract.extractall(extraction_path)
 

@@ -5,12 +5,15 @@ from rest_framework.views import APIView
 from rest_framework import response, schemas, viewsets, status
 from api_rest.models import StorageUnit, Task, Execution, VersionStorageUnit
 from api_rest.datacube.dc_models import DatasetType, DatasetLocation, Dataset
-from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer
+from api_rest.serializers import StorageUnitSerializer, ExecutionSerializer, AlgorithmSerializer
 from rest_framework.parsers import JSONParser
-from StringIO import StringIO
-import shutil, os, re, glob, exceptions, yaml, subprocess
+from io import StringIO
+import shutil, os, re, glob, yaml, subprocess
 from subprocess import CalledProcessError
-from celery.task.control import revoke
+from airflow import models,settings
+from airflow.api.common.experimental import mark_tasks
+from airflow.models import DagRun
+import shutil
 import datetime
 
 # Create your views here.
@@ -18,26 +21,26 @@ class StorageUnitViewSet(viewsets.ModelViewSet):
 	queryset = StorageUnit.objects.all()
 	serializer_class = StorageUnitSerializer
 	
-	def perform_create(self, serializer):
-		if type(self.request.data) is dict:
-			json_content = self.request.data
-		elif type(self.request.data) is str:
-			json_str = self.request.data
-			json_io = StringIO(json_str)
-			json_content = JSONParser().parse(json_io)
-		serializer = StorageUnitSerializer(data=json_content)
-		if serializer.is_valid():
-			storage_unit = serializer.save()
-			serializer = StorageUnitSerializer(storage_unit)
-			return response.Response(data=serializer.data, status=status.HTTP_201_CREATED)
+	# def perform_create(self, serializer):
+	# 	if type(self.request.data) is dict:
+	# 		json_content = self.request.data
+	# 	elif type(self.request.data) is str:
+	# 		json_str = self.request.data
+	# 		json_io = StringIO(json_str)
+	# 		json_content = JSONParser().parse(json_io)
+	# 	serializer = StorageUnitSerializer(data=json_content)
+	# 	if serializer.is_valid():
+	# 		storage_unit = serializer.save()
+	# 		serializer = StorageUnitSerializer(storage_unit)
+	# 		return response.Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
 	def perform_destroy(self, instance):
 		root_dir = instance.root_dir
 		stg_name = instance.name
 		try:
 			DatasetType.objects.filter(name=instance.name)[0].delete()
-		except exceptions.IndexError:
-			print 'Nothing to delete on the database'
+		except IndexError:
+			print('Nothing to delete on the database')
 		instance.delete()
 		shutil.rmtree(root_dir)
 		shutil.rmtree(os.environ['TO_INGEST'] + '/' + stg_name)
@@ -134,6 +137,7 @@ class NewExecutionView(APIView):
 	def post(self, request):
 
 		serializer = ExecutionSerializer(data=request.data)
+		print(request.data)
 		if serializer.is_valid():
 			serializer.save()
 			return response.Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -142,18 +146,39 @@ class NewExecutionView(APIView):
 class CancelExecutionView(APIView):
 	def post(self, request):
 		execution_id=request.data['execution_id']
-		if Execution.objects.filter(id=execution_id):
+		execution = Execution.objects.get(pk=execution_id)
+		if execution is not None:
+			dagbag = models.DagBag(settings.DAGS_FOLDER)
+			dag = dagbag.get_dag(execution.dag_id)
+			dr_list = DagRun.find(dag_id=execution.dag_id)
+			dr = dr_list[-1]
 			try:
-				tasks = Task.objects.filter(execution_id=execution_id)
-				for t in list(tasks):
-					revoke(t.uuid)
+				mark_tasks.set_dag_run_state_to_failed(dag=dag, execution_date=dr.execution_date, commit=True)
+				execution.state = Execution.CANCELED_STATE
+				execution.save()
+
 				return response.Response(data=execution_id, status=status.HTTP_200_OK)
 			except:
 				return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)
+			shutil.rmtree(os.path.join(os.environ['RESULTS']),execution.dag_id)
+			# try:
+			# 	tasks = Task.objects.filter(execution_id=execution_id)
+			# 	for t in list(tasks):
+			# 		revoke(t.uuid)
+			# 	return response.Response(data=execution_id, status=status.HTTP_200_OK)
+			# except:
+			# 	return response.Response(data=execution_id, status=status.HTTP_400_BAD_REQUEST)
 
 		else:
 			return response.Response(data=execution_id, status=status.HTTP_404_NOT_FOUND)
 
+class PublishNewAlgorithmView(APIView):
+	def post(self, request):
+		serializer = AlgorithmSerializer(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return response.Response(serializer.data, status=status.HTTP_200_OK)
+		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DownloadGeotiff(APIView):

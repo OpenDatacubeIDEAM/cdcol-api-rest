@@ -1,0 +1,48 @@
+#!/bin/bash
+# Load this file with 'source' command
+
+WEB_DBHOST=web_db
+WEB_DBPORT=5432
+WEB_DBNAME=cdcol
+WEB_DBUSER=cdcol
+WEB_DBPASSWORD=cdcol
+
+# Connection for Datacube database
+DATACUBE_DBHOST=cube_db
+DATACUBE_DBPORT=5432
+DATACUBE_DBNAME=cube
+DATACUBE_DBUSER=cube
+DATACUBE_DBPASSWORD=cube
+
+# Datacube Storage folder
+DC_STORAGE=/dc_storage
+
+# Ingestion folder
+TO_INGEST=''
+
+# Web Storage folder
+WEB_THUMBNAILS=''
+
+# Celery generic task script
+GEN_TASK_MOD=''
+
+# Convert NetCDF to Tiff
+TIFF_CONV_SCRIPT=''
+
+# GIF script
+GEN_GIF_SCRIPT=''
+
+# Results path
+RESULTS=/web_storage/results
+
+#Airflow dag path
+AIRFLOW_DAG_PATH=''
+
+#Template Path
+TEMPLATE_PATH=''
+
+#Donwload Path
+DOWNLOAD_PATH=''
+
+#Workflow Algorithms Path
+WORKFLOW_ALGORITHMS_PATH=''

@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from api_rest.models import StorageUnit
+
+admin.site.register(StorageUnit)

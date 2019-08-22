@@ -31,22 +31,30 @@ class StorageUnit(models.Model):
 		super(StorageUnit, self).save(*args, **kwargs);
 
 	def print_all(self):
-		print 'Name: ' + self.name
-		print 'Alias: ' +self.alias
-		print 'Description: ' + self.description
-		print 'Description file: ' + self.description_file
-		print 'Ingest file: ' + self.ingest_file
-		print 'Metadata: ' + JSONRenderer().render(self.metadata)
-		print 'Root directory: ' + self.root_dir
-		print 'Created by: ' + self.created_by.email
+		print('Name: ' + self.name)
+		print('Alias: ' +self.alias)
+		print('Description: ' + self.description)
+		print('Description file: ' + self.description_file)
+		print('Ingest file: ' + self.ingest_file)
+		print('Metadata: ' + JSONRenderer().render(self.metadata))
+		print('Root directory: ' + self.root_dir)
+		print('Created by: ' + self.created_by.email)
 		if self.created_at is None:
-			print 'Created at: None'
+			print('Created at: None')
 		else:
-			print 'Created at: ' + str(self.created_at)
+			print('Created at: ' + str(self.created_at))
 		if self.updated_at is None:
-			print 'Updated at: None'
+			print('Updated at: None')
 		else:
-			print 'Updated at: ' + str(self.updated_at)
+			print('Updated at: ' + str(self.updated_at))
+
+	def get_bands(self):
+		bands = list()
+		metadata = self.metadata
+		print(metadata)
+		for meta in metadata['measurements']:
+			bands.append(meta['name'])
+		return bands
 
 	class Meta:
 		db_table = 'storage_storageunit'
@@ -64,6 +72,14 @@ class Topic(models.Model):
 		db_table = 'algorithm_topic'
 
 class Algorithm(models.Model):
+	"""Algorithm.
+
+	    An algorithm is created by a specific user.
+	    * Only the user that create the algorithm can see it.
+	    * The DataAdmin can see all created algorithms.
+	    * An algorithm have serveral Versions.
+	    """
+
 	name = models.CharField(max_length=200)
 	description = models.TextField()
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
@@ -81,12 +97,35 @@ def upload_to(new_version, filename):
 	return "uploads/versions/source_code/{}/{}".format(new_version.id, filename)
 
 class Version(models.Model):
+	"""Algorithm Version.
+
+	    Each algorithm has several versions.
+	    * Only the owner of the algorithm can (create/update/list) the versions.
+	    * Only the owner of the algorithm can execute a version while its
+	        publishing_state is 'In Development'.
+	    * It is only possible to update a version if its publishing_state is in
+	        'In Development'.
+
+	    This is the life cycle of a given version:
+
+	    1. EN DESARROLLO
+	    2. PENDIENTE DE REVISION
+	    3. EN REVISION
+	    4. PUBLICADA
+	    5. OBSOLETA
+	    """
+
+
 	DEVELOPED_STATE = '1'
 	PUBLISHED_STATE = '2'
 	DEPRECATED_STATE = '3'
-	# PUBLISHING STATES
+	REVIEW_PENDING = '4'
+	REVIEW = '5'
+
 	VERSION_STATES = (
 		(DEVELOPED_STATE, "EN DESARROLLO"),
+		(REVIEW_PENDING, 'PENDIENTE DE REVISION'),
+		(REVIEW, "EN REVISION"),
 		(PUBLISHED_STATE, "PUBLICADA"),
 		(DEPRECATED_STATE, "OBSOLETA"),
 	)
@@ -97,7 +136,7 @@ class Version(models.Model):
 	repository_url = models.CharField(max_length=300)
 	source_code = models.FileField(upload_to=upload_to, blank=True, null=True)
 	publishing_state = models.CharField(max_length=2, choices=VERSION_STATES)
-	created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='version_author')
+	#created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='version_author')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -145,6 +184,7 @@ class Execution(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	generate_mosaic = models.BooleanField(default=False)
+	dag_id = models.CharField(max_length=200)
 
 	def __unicode__(self):
 		return "{} - {} - v{}".format(self.id, self.version.algorithm.name, self.version.number)

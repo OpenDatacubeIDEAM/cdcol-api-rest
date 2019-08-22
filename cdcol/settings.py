@@ -93,6 +93,11 @@ DATABASES = {
         'NAME': os.environ['DATACUBE_DBNAME'],
         'USER': os.environ['DATACUBE_DBUSER'],
         'PASSWORD': os.environ['DATACUBE_DBPASSWORD'],
+        # Option provided to allow django search on the 
+        # agdc schema created by the datacube
+        'OPTIONS': {
+            'options': '-c search_path=agdc,public'
+        },
     }
 }
 
